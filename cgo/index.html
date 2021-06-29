@@ -1,0 +1,3263 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Personal fork of Go Programming Language Wiki">
+      
+      
+      
+      
+        <link rel="canonical" href="https://zchee.github.io/golang-wiki/cgo/">
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.9">
+    
+    
+      
+        <title>cgo - Go Programming Language Wiki</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ca7ac06f.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.f1a3b89f.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#2094f3">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+  
+
+
+
+  
+  
+
+
+
+  <script>window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-89201129-1","auto"),ga("set","anonymizeIp",!0),ga("send","pageview"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){var e;this.value&&(e=document.location.pathname,ga("send","pageview",e+"?q="+this.value))}),"undefined"!=typeof location$&&location$.subscribe(function(e){ga("send","pageview",e.pathname)})})</script>
+  <script async src="https://www.google-analytics.com/analytics.js"></script>
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="preference" data-md-color-primary="blue" data-md-color-accent="blue">
+  
+    
+    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#introduction" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Go Programming Language Wiki" class="md-header__button md-logo" aria-label="Go Programming Language Wiki" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Go Programming Language Wiki
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              cgo
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/zchee/golang-wiki/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zchee/golang-wiki
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Go Programming Language Wiki" class="md-nav__button md-logo" aria-label="Go Programming Language Wiki" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Go Programming Language Wiki
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/zchee/golang-wiki/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zchee/golang-wiki
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Home/" class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Articles/" class="md-nav__link">
+        Articles
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../AssemblyPolicy/" class="md-nav__link">
+        AssemblyPolicy
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../AVX512/" class="md-nav__link">
+        AVX512
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Benchmarks/" class="md-nav__link">
+        Benchmarks
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Blogs/" class="md-nav__link">
+        Blogs
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Books/" class="md-nav__link">
+        Books
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../BoundingResourceUse/" class="md-nav__link">
+        BoundingResourceUse
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          cgo
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        cgo
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-basics" class="md-nav__link">
+    The basics
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calling-go-functions-from-c" class="md-nav__link">
+    Calling Go functions from C
+  </a>
+  
+    <nav class="md-nav" aria-label="Calling Go functions from C">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#global-functions" class="md-nav__link">
+    Global functions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-variables" class="md-nav__link">
+    Function variables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-pointer-callbacks" class="md-nav__link">
+    Function pointer callbacks
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#go-strings-and-c-strings" class="md-nav__link">
+    Go strings and C strings
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#turning-c-arrays-into-go-slices" class="md-nav__link">
+    Turning C arrays into Go slices
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-pitfalls" class="md-nav__link">
+    Common Pitfalls
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Pitfalls">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#struct-alignment-issues" class="md-nav__link">
+    Struct Alignment Issues
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#export-and-definition-in-preamble" class="md-nav__link">
+    //export and definition in preamble
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#windows" class="md-nav__link">
+    Windows
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#environmental-variables" class="md-nav__link">
+    environmental variables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tests" class="md-nav__link">
+    tests
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ChromeOS/" class="md-nav__link">
+        ChromeOS
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CodeReview/" class="md-nav__link">
+        CodeReview
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CodeReviewComments/" class="md-nav__link">
+        CodeReviewComments
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CodeReviewConcurrency/" class="md-nav__link">
+        CodeReviewConcurrency
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CodeTools/" class="md-nav__link">
+        CodeTools
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Comments/" class="md-nav__link">
+        Comments
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CommitMessage/" class="md-nav__link">
+        CommitMessage
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CommonMistakes/" class="md-nav__link">
+        CommonMistakes
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CompilerOptimizations/" class="md-nav__link">
+        CompilerOptimizations
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Conferences/" class="md-nav__link">
+        Conferences
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Configuring-GoLand-for-WebAssembly/" class="md-nav__link">
+        Configuring GoLand for WebAssembly
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Contributing-to-gopls/" class="md-nav__link">
+        Contributing to gopls
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CoreDumpDebugging/" class="md-nav__link">
+        CoreDumpDebugging
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Courses/" class="md-nav__link">
+        Courses
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CreatingSubRepository/" class="md-nav__link">
+        CreatingSubRepository
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CSSStyleGuide/" class="md-nav__link">
+        CSSStyleGuide
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CustomPprofProfiles/" class="md-nav__link">
+        CustomPprofProfiles
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Darwin/" class="md-nav__link">
+        Darwin
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DashboardBuilders/" class="md-nav__link">
+        DashboardBuilders
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Deprecated/" class="md-nav__link">
+        Deprecated
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DesignDocuments/" class="md-nav__link">
+        DesignDocuments
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DevExp/" class="md-nav__link">
+        DevExp
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Diagnostics/" class="md-nav__link">
+        Diagnostics
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Download-build-farm-failed-logs-and-debugging/" class="md-nav__link">
+        Download build farm failed logs and debugging
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DragonFly-BSD/" class="md-nav__link">
+        DragonFly BSD
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Errors/" class="md-nav__link">
+        Errors
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ErrorValueFAQ/" class="md-nav__link">
+        ErrorValueFAQ
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ExperienceReports/" class="md-nav__link">
+        ExperienceReports
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../FileTreeDocumentation/" class="md-nav__link">
+        FileTreeDocumentation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../FreeBSD/" class="md-nav__link">
+        FreeBSD
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../FromXToGo/" class="md-nav__link">
+        FromXToGo
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Frozen/" class="md-nav__link">
+        Frozen
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Gardening/" class="md-nav__link">
+        Gardening
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GccgoCrossCompilation/" class="md-nav__link">
+        GccgoCrossCompilation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GcToolchainTricks/" class="md-nav__link">
+        GcToolchainTricks
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GerritAccess/" class="md-nav__link">
+        GerritAccess
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GerritBot/" class="md-nav__link">
+        GerritBot
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GithubAccess/" class="md-nav__link">
+        GithubAccess
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GitHubCodeLayout/" class="md-nav__link">
+        GitHubCodeLayout
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go-1.10-Release-Party/" class="md-nav__link">
+        Go 1.10 Release Party
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go-1.6-release-party/" class="md-nav__link">
+        Go 1.6 release party
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go-1.8-Release-Party/" class="md-nav__link">
+        Go 1.8 Release Party
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go-Community-Slides/" class="md-nav__link">
+        Go Community Slides
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go-Release-Cycle/" class="md-nav__link">
+        Go Release Cycle
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go1point1Gotchas/" class="md-nav__link">
+        Go1point1Gotchas
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go2/" class="md-nav__link">
+        Go2
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go2ErrorHandlingFeedback/" class="md-nav__link">
+        Go2ErrorHandlingFeedback
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go2ErrorValuesFeedback/" class="md-nav__link">
+        Go2ErrorValuesFeedback
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go2GenericsFeedback/" class="md-nav__link">
+        Go2GenericsFeedback
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoArm/" class="md-nav__link">
+        GoArm
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoForCPPProgrammers/" class="md-nav__link">
+        GoForCPPProgrammers
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoGenerateTools/" class="md-nav__link">
+        GoGenerateTools
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoGetProxyConfig/" class="md-nav__link">
+        GoGetProxyConfig
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoGetTools/" class="md-nav__link">
+        GoGetTools
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../golang-tools/" class="md-nav__link">
+        golang tools
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoMips/" class="md-nav__link">
+        GoMips
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Gomote/" class="md-nav__link">
+        Gomote
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GOPATH/" class="md-nav__link">
+        GOPATH
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Gopher/" class="md-nav__link">
+        Gopher
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gopherbot/" class="md-nav__link">
+        gopherbot
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Gophers-Tunisia/" class="md-nav__link">
+        Gophers Tunisia
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gopls-integrator-FAQ/" class="md-nav__link">
+        gopls integrator FAQ
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gopls/" class="md-nav__link">
+        gopls
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoStrings/" class="md-nav__link">
+        GoStrings
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoTalks/" class="md-nav__link">
+        GoTalks
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoUserGroups/" class="md-nav__link">
+        GoUserGroups
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoUsers/" class="md-nav__link">
+        GoUsers
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoVsGenerics/" class="md-nav__link">
+        GoVsGenerics
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../HandlingIssues/" class="md-nav__link">
+        HandlingIssues
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Hashing/" class="md-nav__link">
+        Hashing
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../heapdump13/" class="md-nav__link">
+        heapdump13
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../heapdump14/" class="md-nav__link">
+        heapdump14
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../heapdump15-through-heapdump17/" class="md-nav__link">
+        heapdump15 through heapdump17
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../heapdump15/" class="md-nav__link">
+        heapdump15
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../HostedContinuousIntegration/" class="md-nav__link">
+        HostedContinuousIntegration
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../How-to-ask-for-help/" class="md-nav__link">
+        How to ask for help
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../HowToAsk/" class="md-nav__link">
+        HowToAsk
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../HttpFetch/" class="md-nav__link">
+        HttpFetch
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../HttpStaticFiles/" class="md-nav__link">
+        HttpStaticFiles
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../IDEsAndTextEditorPlugins/" class="md-nav__link">
+        IDEsAndTextEditorPlugins
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../InstallFromSource/" class="md-nav__link">
+        InstallFromSource
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../InterfaceSlice/" class="md-nav__link">
+        InterfaceSlice
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../InvalidFlag/" class="md-nav__link">
+        InvalidFlag
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iota/" class="md-nav__link">
+        Iota
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../IssueLabels/" class="md-nav__link">
+        IssueLabels
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Learn/" class="md-nav__link">
+        Learn
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../LearnConcurrency/" class="md-nav__link">
+        LearnConcurrency
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../LearnErrorHandling/" class="md-nav__link">
+        LearnErrorHandling
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../LearnServerProgramming/" class="md-nav__link">
+        LearnServerProgramming
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../LearnTesting/" class="md-nav__link">
+        LearnTesting
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Linux/" class="md-nav__link">
+        Linux
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../LinuxKernelSignalVectorBug/" class="md-nav__link">
+        LinuxKernelSignalVectorBug
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Livestreams/" class="md-nav__link">
+        Livestreams
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../LockOSThread/" class="md-nav__link">
+        LockOSThread
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MethodSets/" class="md-nav__link">
+        MethodSets
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MinimumRequirements/" class="md-nav__link">
+        MinimumRequirements
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MinorReleases/" class="md-nav__link">
+        MinorReleases
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Mobile/" class="md-nav__link">
+        Mobile
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Modules/" class="md-nav__link">
+        Modules
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MultipleGoRoots/" class="md-nav__link">
+        MultipleGoRoots
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MutexOrChannel/" class="md-nav__link">
+        MutexOrChannel
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../NativeClient/" class="md-nav__link">
+        NativeClient
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../NetBSD/" class="md-nav__link">
+        NetBSD
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../NewSpeakers/" class="md-nav__link">
+        NewSpeakers
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../NoMeToo/" class="md-nav__link">
+        NoMeToo
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../NonEnglish/" class="md-nav__link">
+        NonEnglish
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../NoPlusOne/" class="md-nav__link">
+        NoPlusOne
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../OlderVersions/" class="md-nav__link">
+        OlderVersions
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../OpenBSD/" class="md-nav__link">
+        OpenBSD
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PackageManagementTools/" class="md-nav__link">
+        PackageManagementTools
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PackagePublishing/" class="md-nav__link">
+        PackagePublishing
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PanicAndRecover/" class="md-nav__link">
+        PanicAndRecover
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PerfDashboard/" class="md-nav__link">
+        PerfDashboard
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Performance/" class="md-nav__link">
+        Performance
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Plan9/" class="md-nav__link">
+        Plan9
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Podcasts/" class="md-nav__link">
+        Podcasts
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PortingPolicy/" class="md-nav__link">
+        PortingPolicy
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PriorDiscussion/" class="md-nav__link">
+        PriorDiscussion
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Projects/" class="md-nav__link">
+        Projects
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Proposals/" class="md-nav__link">
+        Proposals
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ProviderIntegration/" class="md-nav__link">
+        ProviderIntegration
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Questions/" class="md-nav__link">
+        Questions
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RaceDetector/" class="md-nav__link">
+        RaceDetector
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Range/" class="md-nav__link">
+        Range
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RateLimiting/" class="md-nav__link">
+        RateLimiting
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Rationales/" class="md-nav__link">
+        Rationales
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ResearchPapers/" class="md-nav__link">
+        ResearchPapers
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Resolving-Problems-From-Modified-Module-Path/" class="md-nav__link">
+        Resolving Problems From Modified Module Path
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Screencasts/" class="md-nav__link">
+        Screencasts
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SendingMail/" class="md-nav__link">
+        SendingMail
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SettingGOPATH/" class="md-nav__link">
+        SettingGOPATH
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SignalHandling/" class="md-nav__link">
+        SignalHandling
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SimultaneousAssignment/" class="md-nav__link">
+        SimultaneousAssignment
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SliceTricks/" class="md-nav__link">
+        SliceTricks
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SlowBots/" class="md-nav__link">
+        SlowBots
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Solaris/" class="md-nav__link">
+        Solaris
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Spectre/" class="md-nav__link">
+        Spectre
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Spelling/" class="md-nav__link">
+        Spelling
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SQLDrivers/" class="md-nav__link">
+        SQLDrivers
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SQLInterface/" class="md-nav__link">
+        SQLInterface
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Style/" class="md-nav__link">
+        Style
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SuccessStories/" class="md-nav__link">
+        SuccessStories
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Switch/" class="md-nav__link">
+        Switch
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../TableDrivenTests/" class="md-nav__link">
+        TableDrivenTests
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../TargetSpecific/" class="md-nav__link">
+        TargetSpecific
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../TestComments/" class="md-nav__link">
+        TestComments
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Timeouts/" class="md-nav__link">
+        Timeouts
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Training/" class="md-nav__link">
+        Training
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Ubuntu/" class="md-nav__link">
+        Ubuntu
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vgo/" class="md-nav__link">
+        vgo
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../WebAccessibilityResourcesAndTips/" class="md-nav__link">
+        WebAccessibilityResourcesAndTips
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../WebAssembly/" class="md-nav__link">
+        WebAssembly
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Well-known-struct-tags/" class="md-nav__link">
+        Well known struct tags
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../WhyGo/" class="md-nav__link">
+        WhyGo
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../windows-scoop-install-go-cli/" class="md-nav__link">
+        windows scoop install go cli
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Windows/" class="md-nav__link">
+        Windows
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../WindowsBuild/" class="md-nav__link">
+        WindowsBuild
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../WindowsCrossCompiling/" class="md-nav__link">
+        WindowsCrossCompiling
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../WindowsDLLs/" class="md-nav__link">
+        WindowsDLLs
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../X-Repositories/" class="md-nav__link">
+        X Repositories
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/zchee/golang-wiki/edit/master/docs/cgo.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link"></a></h1>
+<p>First, <a href="http://golang.org/cmd/cgo">http://golang.org/cmd/cgo</a> is the primary cgo documentation.</p>
+<p>There is also a good introduction article at <a href="http://golang.org/doc/articles/c_go_cgo.html">http://golang.org/doc/articles/c_go_cgo.html</a>.</p>
+<h2 id="the-basics">The basics<a class="headerlink" href="#the-basics" title="Permanent link"></a></h2>
+<p>If a Go source file imports <code>"C"</code>, it is using cgo. The Go file will have access to anything appearing in the comment immediately preceding the line <code>import "C"</code>, and will be linked against all other cgo comments in other Go files, and all C files included in the build process.</p>
+<p>Note that there must be no blank lines in between the cgo comment and the import statement.</p>
+<p>To access a symbol originating from the C side, use the package name <code>C</code>. That is, if you want to call the C function <code>printf()</code> from Go code, you write <code>C.printf()</code>.  Since variable argument methods like printf aren't supported yet (issue <a href="https://github.com/golang/go/issues/975">975</a>), we will wrap it in the C method "myprint":</p>
+<div class="highlight"><pre><span></span><code><span class="kn">package</span> <span class="nx">cgoexample</span>
+
+<span class="cm">/*</span>
+<span class="cm">#include &lt;stdio.h&gt;</span>
+<span class="cm">#include &lt;stdlib.h&gt;</span>
+
+<span class="cm">void myprint(char* s) {</span>
+<span class="cm">	printf(&quot;%s\n&quot;, s);</span>
+<span class="cm">}</span>
+<span class="cm">*/</span>
+<span class="kn">import</span> <span class="s">&quot;C&quot;</span>
+
+<span class="kn">import</span> <span class="s">&quot;unsafe&quot;</span>
+
+<span class="kd">func</span> <span class="nx">Example</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">cs</span> <span class="o">:=</span> <span class="nx">C</span><span class="p">.</span><span class="nx">CString</span><span class="p">(</span><span class="s">&quot;Hello from stdio\n&quot;</span><span class="p">)</span>
+	<span class="nx">C</span><span class="p">.</span><span class="nx">myprint</span><span class="p">(</span><span class="nx">cs</span><span class="p">)</span>
+	<span class="nx">C</span><span class="p">.</span><span class="nx">free</span><span class="p">(</span><span class="nx">unsafe</span><span class="p">.</span><span class="nx">Pointer</span><span class="p">(</span><span class="nx">cs</span><span class="p">))</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="calling-go-functions-from-c">Calling Go functions from C<a class="headerlink" href="#calling-go-functions-from-c" title="Permanent link"></a></h2>
+<p>It is possible to call both top-level Go functions and function variables from C code invoked from Go code using cgo.</p>
+<h3 id="global-functions">Global functions<a class="headerlink" href="#global-functions" title="Permanent link"></a></h3>
+<p>Go makes its functions available to C code through use of a special <code>//export</code> comment.
+Note: you can't define any C functions in preamble if you're using exports.</p>
+<p>For example, there are two files, foo.c and foo.go:
+foo.go contains:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">package</span> <span class="nx">gocallback</span>
+
+<span class="kn">import</span> <span class="s">&quot;fmt&quot;</span>
+
+<span class="cm">/*</span>
+<span class="cm">#include &lt;stdio.h&gt;</span>
+<span class="cm">extern void ACFunction();</span>
+<span class="cm">*/</span>
+<span class="kn">import</span> <span class="s">&quot;C&quot;</span>
+
+<span class="c1">//export AGoFunction</span>
+<span class="kd">func</span> <span class="nx">AGoFunction</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;AGoFunction()&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nx">Example</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">C</span><span class="p">.</span><span class="nx">ACFunction</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>foo.c contains:</p>
+<div class="highlight"><pre><span></span><code><span class="err">#</span><span class="nx">include</span> <span class="s">&quot;_cgo_export.h&quot;</span>
+<span class="nx">void</span> <span class="nx">ACFunction</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">printf</span><span class="p">(</span><span class="s">&quot;ACFunction()\n&quot;</span><span class="p">);</span>
+	<span class="nx">AGoFunction</span><span class="p">();</span>
+<span class="p">}</span> 
+</code></pre></div>
+<h3 id="function-variables">Function variables<a class="headerlink" href="#function-variables" title="Permanent link"></a></h3>
+<p>The following code shows an example of invoking a Go callback from C code. Because of the <a href="https://golang.org/cmd/cgo/#hdr-Passing_pointers">pointer passing rules</a> Go code can not pass a function value directly to C.  Instead it is necessary to use an indirection. This example uses a registry with a mutex, but there are many other ways to map from a value that can be passed to C to a Go function.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">package</span> <span class="nx">gocallback</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&quot;fmt&quot;</span>
+	<span class="s">&quot;sync&quot;</span>
+<span class="p">)</span>
+
+<span class="cm">/*</span>
+<span class="cm">extern void go_callback_int(int foo, int p1);</span>
+
+<span class="cm">// normally you will have to define function or variables</span>
+<span class="cm">// in another separate C file to avoid the multiple definition</span>
+<span class="cm">// errors, however, using &quot;static inline&quot; is a nice workaround</span>
+<span class="cm">// for simple functions like this one.</span>
+<span class="cm">static inline void CallMyFunction(int foo) {</span>
+<span class="cm">	go_callback_int(foo, 5);</span>
+<span class="cm">}</span>
+<span class="cm">*/</span>
+<span class="kn">import</span> <span class="s">&quot;C&quot;</span>
+
+<span class="c1">//export go_callback_int</span>
+<span class="kd">func</span> <span class="nx">go_callback_int</span><span class="p">(</span><span class="nx">foo</span> <span class="nx">C</span><span class="p">.</span><span class="kt">int</span><span class="p">,</span> <span class="nx">p1</span> <span class="nx">C</span><span class="p">.</span><span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">fn</span> <span class="o">:=</span> <span class="nx">lookup</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nx">foo</span><span class="p">))</span>
+	<span class="nx">fn</span><span class="p">(</span><span class="nx">p1</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nx">MyCallback</span><span class="p">(</span><span class="nx">x</span> <span class="nx">C</span><span class="p">.</span><span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;callback with&quot;</span><span class="p">,</span> <span class="nx">x</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nx">Example</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">i</span> <span class="o">:=</span> <span class="nx">register</span><span class="p">(</span><span class="nx">MyCallback</span><span class="p">)</span>
+	<span class="nx">C</span><span class="p">.</span><span class="nx">CallMyFunction</span><span class="p">(</span><span class="nx">C</span><span class="p">.</span><span class="nb">int</span><span class="p">(</span><span class="nx">i</span><span class="p">))</span>
+	<span class="nx">unregister</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">mu</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span>
+<span class="kd">var</span> <span class="nx">index</span> <span class="kt">int</span>
+<span class="kd">var</span> <span class="nx">fns</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">int</span><span class="p">]</span><span class="kd">func</span><span class="p">(</span><span class="nx">C</span><span class="p">.</span><span class="kt">int</span><span class="p">))</span>
+
+<span class="kd">func</span> <span class="nx">register</span><span class="p">(</span><span class="nx">fn</span> <span class="kd">func</span><span class="p">(</span><span class="nx">C</span><span class="p">.</span><span class="kt">int</span><span class="p">))</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="nx">mu</span><span class="p">.</span><span class="nx">Lock</span><span class="p">()</span>
+	<span class="k">defer</span> <span class="nx">mu</span><span class="p">.</span><span class="nx">Unlock</span><span class="p">()</span>
+	<span class="nx">index</span><span class="o">++</span>
+	<span class="k">for</span> <span class="nx">fns</span><span class="p">[</span><span class="nx">index</span><span class="p">]</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">index</span><span class="o">++</span>
+	<span class="p">}</span>
+	<span class="nx">fns</span><span class="p">[</span><span class="nx">index</span><span class="p">]</span> <span class="p">=</span> <span class="nx">fn</span>
+	<span class="k">return</span> <span class="nx">index</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nx">lookup</span><span class="p">(</span><span class="nx">i</span> <span class="kt">int</span><span class="p">)</span> <span class="kd">func</span><span class="p">(</span><span class="nx">C</span><span class="p">.</span><span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">mu</span><span class="p">.</span><span class="nx">Lock</span><span class="p">()</span>
+	<span class="k">defer</span> <span class="nx">mu</span><span class="p">.</span><span class="nx">Unlock</span><span class="p">()</span>
+	<span class="k">return</span> <span class="nx">fns</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nx">unregister</span><span class="p">(</span><span class="nx">i</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">mu</span><span class="p">.</span><span class="nx">Lock</span><span class="p">()</span>
+	<span class="k">defer</span> <span class="nx">mu</span><span class="p">.</span><span class="nx">Unlock</span><span class="p">()</span>
+	<span class="nb">delete</span><span class="p">(</span><span class="nx">fns</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="function-pointer-callbacks">Function pointer callbacks<a class="headerlink" href="#function-pointer-callbacks" title="Permanent link"></a></h3>
+<p>C code can call exported Go functions with their explicit name. But if a C-program wants a function pointer, a gateway function has to be written. This is because we can't take the address of a Go function and give that to C-code since the cgo tool will generate a stub in C that should be called. The following example shows how to integrate with C code wanting a function pointer of a give type.</p>
+<p>Place these source files under <em>$GOPATH/src/ccallbacks/</em>. Compile and run with:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>gcc -c clibrary.c
+<span class="gp">$ </span>ar cru libclibrary.a clibrary.o
+<span class="gp">$ </span>go build
+<span class="gp">$ </span>./ccallbacks
+<span class="go">Go.main(): calling C function with callback to us</span>
+<span class="go">C.some_c_func(): calling callback with arg = 2</span>
+<span class="go">C.callOnMeGo_cgo(): called with arg = 2</span>
+<span class="go">Go.callOnMeGo(): called with arg = 2</span>
+<span class="go">C.some_c_func(): callback responded with 3</span>
+</code></pre></div>
+<p><strong>goprog.go</strong></p>
+<div class="highlight"><pre><span></span><code><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="cm">/*</span>
+<span class="cm">#cgo CFLAGS: -I .</span>
+<span class="cm">#cgo LDFLAGS: -L . -lclibrary</span>
+
+<span class="cm">#include &quot;clibrary.h&quot;</span>
+
+<span class="cm">int callOnMeGo_cgo(int in); // Forward declaration.</span>
+<span class="cm">*/</span>
+<span class="kn">import</span> <span class="s">&quot;C&quot;</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&quot;fmt&quot;</span>
+	<span class="s">&quot;unsafe&quot;</span>
+<span class="p">)</span>
+
+<span class="c1">//export callOnMeGo</span>
+<span class="kd">func</span> <span class="nx">callOnMeGo</span><span class="p">(</span><span class="nx">in</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;Go.callOnMeGo(): called with arg = %d\n&quot;</span><span class="p">,</span> <span class="nx">in</span><span class="p">)</span>
+	<span class="k">return</span> <span class="nx">in</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;Go.main(): calling C function with callback to us\n&quot;</span><span class="p">)</span>
+	<span class="nx">C</span><span class="p">.</span><span class="nx">some_c_func</span><span class="p">((</span><span class="nx">C</span><span class="p">.</span><span class="nx">callback_fcn</span><span class="p">)(</span><span class="nx">unsafe</span><span class="p">.</span><span class="nx">Pointer</span><span class="p">(</span><span class="nx">C</span><span class="p">.</span><span class="nx">callOnMeGo_cgo</span><span class="p">)))</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>cfuncs.go</strong></p>
+<div class="highlight"><pre><span></span><code><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="cm">/*</span>
+
+<span class="cm">#include &lt;stdio.h&gt;</span>
+
+<span class="cm">// The gateway function</span>
+<span class="cm">int callOnMeGo_cgo(int in)</span>
+<span class="cm">{</span>
+<span class="cm">	printf(&quot;C.callOnMeGo_cgo(): called with arg = %d\n&quot;, in);</span>
+<span class="cm">	int callOnMeGo(int);</span>
+<span class="cm">	return callOnMeGo(in);</span>
+<span class="cm">}</span>
+<span class="cm">*/</span>
+<span class="kn">import</span> <span class="s">&quot;C&quot;</span>
+</code></pre></div>
+<p><strong>clibrary.h</strong></p>
+<div class="highlight"><pre><span></span><code><span class="cp">#ifndef CLIBRARY_H</span>
+<span class="cp">#define CLIBRARY_H</span>
+<span class="k">typedef</span> <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">callback_fcn</span><span class="p">)(</span><span class="kt">int</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">some_c_func</span><span class="p">(</span><span class="n">callback_fcn</span><span class="p">);</span>
+<span class="cp">#endif</span>
+</code></pre></div>
+<p><strong>clibrary.c</strong></p>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;clibrary.h&quot;</span><span class="cp"></span>
+
+<span class="kt">void</span> <span class="nf">some_c_func</span><span class="p">(</span><span class="n">callback_fcn</span> <span class="n">callback</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="kt">int</span> <span class="n">arg</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">&quot;C.some_c_func(): calling callback with arg = %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">arg</span><span class="p">);</span>
+	<span class="kt">int</span> <span class="n">response</span> <span class="o">=</span> <span class="n">callback</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">&quot;C.some_c_func(): callback responded with %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">response</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="go-strings-and-c-strings">Go strings and C strings<a class="headerlink" href="#go-strings-and-c-strings" title="Permanent link"></a></h2>
+<p>Go strings and C strings are different. Go strings are the combination of a length and a pointer to the first character in the string. C strings are just the pointer to the first character, and are terminated by the first instance of the null character, <code>'\0'</code>.</p>
+<p>Go provides means to go from one to another in the form of the following three functions:
+  * <code>func C.CString(goString string) *C.char</code>
+  * <code>func C.GoString(cString *C.char) string</code>
+  * <code>func C.GoStringN(cString *C.char, length C.int) string</code></p>
+<p>One important thing to remember is that <code>C.CString()</code> will allocate a new string of the appropriate length, and return it. That means the C string is not going to be garbage collected and it is up to <strong>you</strong> to free it. A standard way to do this follows.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// #include &lt;stdlib.h&gt;</span>
+<span class="kn">import</span> <span class="s">&quot;C&quot;</span>
+<span class="kn">import</span> <span class="s">&quot;unsafe&quot;</span>
+<span class="o">...</span>
+	<span class="kd">var</span> <span class="nx">cmsg</span> <span class="o">*</span><span class="nx">C</span><span class="p">.</span><span class="nx">char</span> <span class="p">=</span> <span class="nx">C</span><span class="p">.</span><span class="nx">CString</span><span class="p">(</span><span class="s">&quot;hi&quot;</span><span class="p">)</span>
+	<span class="k">defer</span> <span class="nx">C</span><span class="p">.</span><span class="nx">free</span><span class="p">(</span><span class="nx">unsafe</span><span class="p">.</span><span class="nx">Pointer</span><span class="p">(</span><span class="nx">cmsg</span><span class="p">))</span>
+	<span class="c1">// do something with the C string</span>
+</code></pre></div>
+<p>Of course, you aren't required to use <code>defer</code> to call <code>C.free()</code>. You can free the C string whenever you like, but it is your responsibility to make sure it happens.</p>
+<h2 id="turning-c-arrays-into-go-slices">Turning C arrays into Go slices<a class="headerlink" href="#turning-c-arrays-into-go-slices" title="Permanent link"></a></h2>
+<p>C arrays are typically either null-terminated or have a length kept elsewhere.</p>
+<p>Go provides the following function to make a new Go byte slice from a C array:
+  * <code>func C.GoBytes(cArray unsafe.Pointer, length C.int) []byte</code></p>
+<p>To create a Go slice backed by a C array (without copying the original data), one needs to acquire this length at runtime and use a type conversion to a pointer to a very big array and then slice it to the length that you want (also remember to set the cap if you're using Go 1.2 or later), for example (see <a href="http://play.golang.org/p/XuC0xqtAIC">http://play.golang.org/p/XuC0xqtAIC</a> for a runnable example):</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="s">&quot;C&quot;</span>
+<span class="kn">import</span> <span class="s">&quot;unsafe&quot;</span>
+<span class="o">...</span>
+        <span class="kd">var</span> <span class="nx">theCArray</span> <span class="o">*</span><span class="nx">C</span><span class="p">.</span><span class="nx">YourType</span> <span class="p">=</span> <span class="nx">C</span><span class="p">.</span><span class="nx">getTheArray</span><span class="p">()</span>
+        <span class="nx">length</span> <span class="o">:=</span> <span class="nx">C</span><span class="p">.</span><span class="nx">getTheArrayLength</span><span class="p">()</span>
+        <span class="nx">slice</span> <span class="o">:=</span> <span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">28</span><span class="p">]</span><span class="nx">C</span><span class="p">.</span><span class="nx">YourType</span><span class="p">)(</span><span class="nx">unsafe</span><span class="p">.</span><span class="nx">Pointer</span><span class="p">(</span><span class="nx">theCArray</span><span class="p">))[:</span><span class="nx">length</span><span class="p">:</span><span class="nx">length</span><span class="p">]</span>
+</code></pre></div>
+<p>It is important to keep in mind that the Go garbage collector will not interact with this data, and that if it is freed from the C side of things, the behavior of any Go code using the slice is nondeterministic.</p>
+<h2 id="common-pitfalls">Common Pitfalls<a class="headerlink" href="#common-pitfalls" title="Permanent link"></a></h2>
+<h3 id="struct-alignment-issues">Struct Alignment Issues<a class="headerlink" href="#struct-alignment-issues" title="Permanent link"></a></h3>
+<p>As Go doesn't support packed struct (e.g., structs where maximum alignment is 1 byte), you can't
+use packed C struct in Go. Even if your program passes compilation, it won't do what you want.
+To use it, you have to read/write the struct as byte array/slice.</p>
+<p>Another problem is that some types has lower alignment requirement than their counterpart in Go,
+and if that type happens to be aligned in C but not in Go rules, that struct simply can't be represented
+in Go. An example is this (<a href="https://github.com/golang/go/issues/7560">issue 7560</a>):</p>
+<p><div class="highlight"><pre><span></span><code><span class="kd">struct</span> <span class="nx">T</span> <span class="p">{</span>
+    <span class="nx">uint32_t</span> <span class="nx">pad</span><span class="p">;</span>
+    <span class="nx">complex</span> <span class="kt">float</span> <span class="nx">x</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div>
+Go's complex64 has an alignment of 8-byte, where as C has only 4-byte (because C treats the
+complex float internally as a <code>struct { float real; float imag; }</code>, not a basic type), this T struct simply
+doesn't have a Go representation. For this case, if you control the layout of the struct, move the
+complex float so that it is also aligned to 8-byte is better, and if you're not willing to move it,
+use this form will force it to align to 8-byte (and waste 4-byte):</p>
+<div class="highlight"><pre><span></span><code><span class="kd">struct</span> <span class="nx">T</span> <span class="p">{</span>
+   <span class="nx">uint32_t</span> <span class="nx">pad</span><span class="p">;</span>
+   <span class="nx">__attribute__</span><span class="p">((</span><span class="nx">align</span><span class="p">(</span><span class="mi">8</span><span class="p">)))</span> <span class="nx">complex</span> <span class="kt">float</span> <span class="nx">x</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div>
+<p>However, if you don't control the struct layout, you will have to define accessor C functions for
+that struct because cgo won't be able to translate that struct into equivalent Go struct.</p>
+<h3 id="export-and-definition-in-preamble"><code>//export</code> and definition in preamble<a class="headerlink" href="#export-and-definition-in-preamble" title="Permanent link"></a></h3>
+<p>If a Go source file uses any <code>//export</code> directives, then the C code in the comment may only include declarations (<code>extern int f();</code>), not definitions (<code>int f() { return 1; }</code> or <code>int n;</code>).
+Note: you can use <code>static inline</code> trick to work around this restriction for tiny functions defined
+in the preamble (see above for a complete example).</p>
+<h3 id="windows">Windows<a class="headerlink" href="#windows" title="Permanent link"></a></h3>
+<p>In order to use cgo on Windows, you'll also need to first install a gcc compiler (for instance, mingw-w64) and have gcc.exe (etc.) in your PATH environment variable before compiling with cgo will work.</p>
+<h3 id="environmental-variables">environmental variables<a class="headerlink" href="#environmental-variables" title="Permanent link"></a></h3>
+<p>Go os.Getenv() doesn't see variables set by C.setenv()</p>
+<h3 id="tests">tests<a class="headerlink" href="#tests" title="Permanent link"></a></h3>
+<p>_test.go files can't use cgo.</p>
+                
+                  
+                    
+
+<hr>
+<div class="md-source-date">
+  <small>
+    
+      Last update: 2021-06-30
+    
+  </small>
+</div>
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../BoundingResourceUse/" class="md-footer__link md-footer__link--prev" aria-label="Previous: BoundingResourceUse" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              BoundingResourceUse
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../ChromeOS/" class="md-footer__link md-footer__link--next" aria-label="Next: ChromeOS" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              ChromeOS
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.sections", "navigation.expand", "toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.477d984a.min.js", "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.82b56eb2.min.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

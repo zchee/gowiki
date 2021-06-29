@@ -1,0 +1,3613 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Personal fork of Go Programming Language Wiki">
+      
+      
+      
+      
+        <link rel="canonical" href="https://zchee.github.io/golang-wiki/PackageManagementTools/">
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.9">
+    
+    
+      
+        <title>PackageManagementTools - Go Programming Language Wiki</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ca7ac06f.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.f1a3b89f.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#2094f3">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+  
+
+
+
+  
+  
+
+
+
+  <script>window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-89201129-1","auto"),ga("set","anonymizeIp",!0),ga("send","pageview"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){var e;this.value&&(e=document.location.pathname,ga("send","pageview",e+"?q="+this.value))}),"undefined"!=typeof location$&&location$.subscribe(function(e){ga("send","pageview",e.pathname)})})</script>
+  <script async src="https://www.google-analytics.com/analytics.js"></script>
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="preference" data-md-color-primary="blue" data-md-color-accent="blue">
+  
+    
+    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#go111module" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Go Programming Language Wiki" class="md-header__button md-logo" aria-label="Go Programming Language Wiki" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Go Programming Language Wiki
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              PackageManagementTools
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/zchee/golang-wiki/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zchee/golang-wiki
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Go Programming Language Wiki" class="md-nav__button md-logo" aria-label="Go Programming Language Wiki" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Go Programming Language Wiki
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/zchee/golang-wiki/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zchee/golang-wiki
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Home/" class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Articles/" class="md-nav__link">
+        Articles
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../AssemblyPolicy/" class="md-nav__link">
+        AssemblyPolicy
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../AVX512/" class="md-nav__link">
+        AVX512
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Benchmarks/" class="md-nav__link">
+        Benchmarks
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Blogs/" class="md-nav__link">
+        Blogs
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Books/" class="md-nav__link">
+        Books
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../BoundingResourceUse/" class="md-nav__link">
+        BoundingResourceUse
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cgo/" class="md-nav__link">
+        cgo
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ChromeOS/" class="md-nav__link">
+        ChromeOS
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CodeReview/" class="md-nav__link">
+        CodeReview
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CodeReviewComments/" class="md-nav__link">
+        CodeReviewComments
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CodeReviewConcurrency/" class="md-nav__link">
+        CodeReviewConcurrency
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CodeTools/" class="md-nav__link">
+        CodeTools
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Comments/" class="md-nav__link">
+        Comments
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CommitMessage/" class="md-nav__link">
+        CommitMessage
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CommonMistakes/" class="md-nav__link">
+        CommonMistakes
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CompilerOptimizations/" class="md-nav__link">
+        CompilerOptimizations
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Conferences/" class="md-nav__link">
+        Conferences
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Configuring-GoLand-for-WebAssembly/" class="md-nav__link">
+        Configuring GoLand for WebAssembly
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Contributing-to-gopls/" class="md-nav__link">
+        Contributing to gopls
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CoreDumpDebugging/" class="md-nav__link">
+        CoreDumpDebugging
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Courses/" class="md-nav__link">
+        Courses
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CreatingSubRepository/" class="md-nav__link">
+        CreatingSubRepository
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CSSStyleGuide/" class="md-nav__link">
+        CSSStyleGuide
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CustomPprofProfiles/" class="md-nav__link">
+        CustomPprofProfiles
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Darwin/" class="md-nav__link">
+        Darwin
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DashboardBuilders/" class="md-nav__link">
+        DashboardBuilders
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Deprecated/" class="md-nav__link">
+        Deprecated
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DesignDocuments/" class="md-nav__link">
+        DesignDocuments
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DevExp/" class="md-nav__link">
+        DevExp
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Diagnostics/" class="md-nav__link">
+        Diagnostics
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Download-build-farm-failed-logs-and-debugging/" class="md-nav__link">
+        Download build farm failed logs and debugging
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DragonFly-BSD/" class="md-nav__link">
+        DragonFly BSD
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Errors/" class="md-nav__link">
+        Errors
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ErrorValueFAQ/" class="md-nav__link">
+        ErrorValueFAQ
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ExperienceReports/" class="md-nav__link">
+        ExperienceReports
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../FileTreeDocumentation/" class="md-nav__link">
+        FileTreeDocumentation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../FreeBSD/" class="md-nav__link">
+        FreeBSD
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../FromXToGo/" class="md-nav__link">
+        FromXToGo
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Frozen/" class="md-nav__link">
+        Frozen
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Gardening/" class="md-nav__link">
+        Gardening
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GccgoCrossCompilation/" class="md-nav__link">
+        GccgoCrossCompilation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GcToolchainTricks/" class="md-nav__link">
+        GcToolchainTricks
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GerritAccess/" class="md-nav__link">
+        GerritAccess
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GerritBot/" class="md-nav__link">
+        GerritBot
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GithubAccess/" class="md-nav__link">
+        GithubAccess
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GitHubCodeLayout/" class="md-nav__link">
+        GitHubCodeLayout
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go-1.10-Release-Party/" class="md-nav__link">
+        Go 1.10 Release Party
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go-1.6-release-party/" class="md-nav__link">
+        Go 1.6 release party
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go-1.8-Release-Party/" class="md-nav__link">
+        Go 1.8 Release Party
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go-Community-Slides/" class="md-nav__link">
+        Go Community Slides
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go-Release-Cycle/" class="md-nav__link">
+        Go Release Cycle
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go1point1Gotchas/" class="md-nav__link">
+        Go1point1Gotchas
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go2/" class="md-nav__link">
+        Go2
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go2ErrorHandlingFeedback/" class="md-nav__link">
+        Go2ErrorHandlingFeedback
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go2ErrorValuesFeedback/" class="md-nav__link">
+        Go2ErrorValuesFeedback
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go2GenericsFeedback/" class="md-nav__link">
+        Go2GenericsFeedback
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoArm/" class="md-nav__link">
+        GoArm
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoForCPPProgrammers/" class="md-nav__link">
+        GoForCPPProgrammers
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoGenerateTools/" class="md-nav__link">
+        GoGenerateTools
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoGetProxyConfig/" class="md-nav__link">
+        GoGetProxyConfig
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoGetTools/" class="md-nav__link">
+        GoGetTools
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../golang-tools/" class="md-nav__link">
+        golang tools
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoMips/" class="md-nav__link">
+        GoMips
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Gomote/" class="md-nav__link">
+        Gomote
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GOPATH/" class="md-nav__link">
+        GOPATH
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Gopher/" class="md-nav__link">
+        Gopher
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gopherbot/" class="md-nav__link">
+        gopherbot
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Gophers-Tunisia/" class="md-nav__link">
+        Gophers Tunisia
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gopls-integrator-FAQ/" class="md-nav__link">
+        gopls integrator FAQ
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gopls/" class="md-nav__link">
+        gopls
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoStrings/" class="md-nav__link">
+        GoStrings
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoTalks/" class="md-nav__link">
+        GoTalks
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoUserGroups/" class="md-nav__link">
+        GoUserGroups
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoUsers/" class="md-nav__link">
+        GoUsers
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoVsGenerics/" class="md-nav__link">
+        GoVsGenerics
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../HandlingIssues/" class="md-nav__link">
+        HandlingIssues
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Hashing/" class="md-nav__link">
+        Hashing
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../heapdump13/" class="md-nav__link">
+        heapdump13
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../heapdump14/" class="md-nav__link">
+        heapdump14
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../heapdump15-through-heapdump17/" class="md-nav__link">
+        heapdump15 through heapdump17
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../heapdump15/" class="md-nav__link">
+        heapdump15
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../HostedContinuousIntegration/" class="md-nav__link">
+        HostedContinuousIntegration
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../How-to-ask-for-help/" class="md-nav__link">
+        How to ask for help
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../HowToAsk/" class="md-nav__link">
+        HowToAsk
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../HttpFetch/" class="md-nav__link">
+        HttpFetch
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../HttpStaticFiles/" class="md-nav__link">
+        HttpStaticFiles
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../IDEsAndTextEditorPlugins/" class="md-nav__link">
+        IDEsAndTextEditorPlugins
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../InstallFromSource/" class="md-nav__link">
+        InstallFromSource
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../InterfaceSlice/" class="md-nav__link">
+        InterfaceSlice
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../InvalidFlag/" class="md-nav__link">
+        InvalidFlag
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iota/" class="md-nav__link">
+        Iota
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../IssueLabels/" class="md-nav__link">
+        IssueLabels
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Learn/" class="md-nav__link">
+        Learn
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../LearnConcurrency/" class="md-nav__link">
+        LearnConcurrency
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../LearnErrorHandling/" class="md-nav__link">
+        LearnErrorHandling
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../LearnServerProgramming/" class="md-nav__link">
+        LearnServerProgramming
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../LearnTesting/" class="md-nav__link">
+        LearnTesting
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Linux/" class="md-nav__link">
+        Linux
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../LinuxKernelSignalVectorBug/" class="md-nav__link">
+        LinuxKernelSignalVectorBug
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Livestreams/" class="md-nav__link">
+        Livestreams
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../LockOSThread/" class="md-nav__link">
+        LockOSThread
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MethodSets/" class="md-nav__link">
+        MethodSets
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MinimumRequirements/" class="md-nav__link">
+        MinimumRequirements
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MinorReleases/" class="md-nav__link">
+        MinorReleases
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Mobile/" class="md-nav__link">
+        Mobile
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Modules/" class="md-nav__link">
+        Modules
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MultipleGoRoots/" class="md-nav__link">
+        MultipleGoRoots
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MutexOrChannel/" class="md-nav__link">
+        MutexOrChannel
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../NativeClient/" class="md-nav__link">
+        NativeClient
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../NetBSD/" class="md-nav__link">
+        NetBSD
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../NewSpeakers/" class="md-nav__link">
+        NewSpeakers
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../NoMeToo/" class="md-nav__link">
+        NoMeToo
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../NonEnglish/" class="md-nav__link">
+        NonEnglish
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../NoPlusOne/" class="md-nav__link">
+        NoPlusOne
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../OlderVersions/" class="md-nav__link">
+        OlderVersions
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../OpenBSD/" class="md-nav__link">
+        OpenBSD
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          PackageManagementTools
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        PackageManagementTools
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#go111module" class="md-nav__link">
+    GO111MODULE
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dep-tool" class="md-nav__link">
+    dep tool
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#go15vendorexperiment" class="md-nav__link">
+    GO15VENDOREXPERIMENT
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pkg-copy-built-using-gopath-modification-supports-fetching-specific-version" class="md-nav__link">
+    Pkg copy, built using GOPATH modification, supports fetching specific version
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pkg-copy-build-using-gopath--modification" class="md-nav__link">
+    Pkg copy, build using GOPATH  modification
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#revision-locking" class="md-nav__link">
+    Revision Locking
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pkg-copy-with-import-path-re-write-as-of-go-15-this-is-no-longer-the-recommended-practice" class="md-nav__link">
+    Pkg copy with import path re-write (As of Go 1.5, this is no longer the recommended practice)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vendor-utilities" class="md-nav__link">
+    Vendor Utilities
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#import-proxies" class="md-nav__link">
+    Import Proxies
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#go-version-managers" class="md-nav__link">
+    Go Version Managers
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#client-app-test-packages" class="md-nav__link">
+    Client App Test Packages
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#abandoned-tools" class="md-nav__link">
+    Abandoned Tools
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#not-written-in-go" class="md-nav__link">
+    Not Written in Go
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PackagePublishing/" class="md-nav__link">
+        PackagePublishing
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PanicAndRecover/" class="md-nav__link">
+        PanicAndRecover
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PerfDashboard/" class="md-nav__link">
+        PerfDashboard
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Performance/" class="md-nav__link">
+        Performance
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Plan9/" class="md-nav__link">
+        Plan9
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Podcasts/" class="md-nav__link">
+        Podcasts
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PortingPolicy/" class="md-nav__link">
+        PortingPolicy
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PriorDiscussion/" class="md-nav__link">
+        PriorDiscussion
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Projects/" class="md-nav__link">
+        Projects
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Proposals/" class="md-nav__link">
+        Proposals
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ProviderIntegration/" class="md-nav__link">
+        ProviderIntegration
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Questions/" class="md-nav__link">
+        Questions
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RaceDetector/" class="md-nav__link">
+        RaceDetector
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Range/" class="md-nav__link">
+        Range
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RateLimiting/" class="md-nav__link">
+        RateLimiting
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Rationales/" class="md-nav__link">
+        Rationales
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ResearchPapers/" class="md-nav__link">
+        ResearchPapers
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Resolving-Problems-From-Modified-Module-Path/" class="md-nav__link">
+        Resolving Problems From Modified Module Path
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Screencasts/" class="md-nav__link">
+        Screencasts
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SendingMail/" class="md-nav__link">
+        SendingMail
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SettingGOPATH/" class="md-nav__link">
+        SettingGOPATH
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SignalHandling/" class="md-nav__link">
+        SignalHandling
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SimultaneousAssignment/" class="md-nav__link">
+        SimultaneousAssignment
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SliceTricks/" class="md-nav__link">
+        SliceTricks
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SlowBots/" class="md-nav__link">
+        SlowBots
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Solaris/" class="md-nav__link">
+        Solaris
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Spectre/" class="md-nav__link">
+        Spectre
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Spelling/" class="md-nav__link">
+        Spelling
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SQLDrivers/" class="md-nav__link">
+        SQLDrivers
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SQLInterface/" class="md-nav__link">
+        SQLInterface
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Style/" class="md-nav__link">
+        Style
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SuccessStories/" class="md-nav__link">
+        SuccessStories
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Switch/" class="md-nav__link">
+        Switch
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../TableDrivenTests/" class="md-nav__link">
+        TableDrivenTests
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../TargetSpecific/" class="md-nav__link">
+        TargetSpecific
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../TestComments/" class="md-nav__link">
+        TestComments
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Timeouts/" class="md-nav__link">
+        Timeouts
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Training/" class="md-nav__link">
+        Training
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Ubuntu/" class="md-nav__link">
+        Ubuntu
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vgo/" class="md-nav__link">
+        vgo
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../WebAccessibilityResourcesAndTips/" class="md-nav__link">
+        WebAccessibilityResourcesAndTips
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../WebAssembly/" class="md-nav__link">
+        WebAssembly
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Well-known-struct-tags/" class="md-nav__link">
+        Well known struct tags
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../WhyGo/" class="md-nav__link">
+        WhyGo
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../windows-scoop-install-go-cli/" class="md-nav__link">
+        windows scoop install go cli
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Windows/" class="md-nav__link">
+        Windows
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../WindowsBuild/" class="md-nav__link">
+        WindowsBuild
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../WindowsCrossCompiling/" class="md-nav__link">
+        WindowsCrossCompiling
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../WindowsDLLs/" class="md-nav__link">
+        WindowsDLLs
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../X-Repositories/" class="md-nav__link">
+        X Repositories
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/zchee/golang-wiki/edit/master/docs/PackageManagementTools.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                  <h1>PackageManagementTools</h1>
+                
+                <p>This page contains a list of tools for managing Go packages and their dependencies (vendoring). The tools are divided into categories based on their approach to version management.</p>
+<p>To see popularity of these tools, click <a href="https://github.com/blindpirate/report-of-build-tools-for-java-and-golang">here</a>.</p>
+<h2 id="go111module">GO111MODULE<a class="headerlink" href="#go111module" title="Permanent link"></a></h2>
+<p>See the [[Modules]] page.</p>
+<p>The official Go proposal is at <a href="https://golang.org/issue/24301">https://golang.org/issue/24301</a>, filed on March 20, 2018 and accepted on May 21, 2018.</p>
+<h2 id="dep-tool">dep tool<a class="headerlink" href="#dep-tool" title="Permanent link"></a></h2>
+<p><a href="https://github.com/golang/dep">dep</a> was the "official experiment." The Go toolchain, as of 1.11, has (experimentally) adopted an approach that sharply diverges from dep. See [[Modules]].</p>
+<h2 id="go15vendorexperiment">GO15VENDOREXPERIMENT<a class="headerlink" href="#go15vendorexperiment" title="Permanent link"></a></h2>
+<p>As of <a href="https://groups.google.com/d/msg/golang-dev/74zjMON9glU/EOKSoaL5p8wJ">June 19<sup>th</sup>, 2015</a>, the Go toolchain included an experimental vendoring flag, <code>GO15VENDOREXPERIMENT</code>. This was part of the Go 1.5 release and represented the Go team's recommended approach to vendoring dependencies. You can read more about how this environment variable worked in the <a href="https://golang.org/cmd/go/#hdr-Vendor_Directories">Go 1.5 documentation</a> and the <a href="https://docs.google.com/document/d/1Bz5-UB7g2uPBdOx-rw5t9MxJwkfpx90cqG9AFL0JAYo/view">original design document</a>. For a more detailed explanation, check out <a href="https://medium.com/@freeformz/go-1-5-s-vendor-experiment-fd3e830f52c3">this post</a> by <a href="https://twitter.com/freeformz">@freeformz</a> or <a href="http://engineeredweb.com/blog/2015/go-1.5-vendor-handling/">this short explainer</a> from Engineered Web.</p>
+<p>The Go 1.6 release made this behaviour the default, so you no longer need to have <code>GO15VENDOREXPERIMENT</code> set. Go 1.7 made this a standard feature and removed support for the flag.</p>
+<p>Tools supporting this feature include:</p>
+<ul>
+<li><a href="https://github.com/golang/dep">dep</a></li>
+<li><a href="https://github.com/kovetskiy/manul">manul</a> - Vendor packages using git submodules.</li>
+<li><a href="https://github.com/tools/godep">Godep</a></li>
+<li><a href="https://github.com/kardianos/govendor">Govendor</a></li>
+<li><a href="https://github.com/hectorj/godm">godm</a></li>
+<li><a href="https://github.com/kr/vexp">vexp</a></li>
+<li><a href="https://github.com/forestgiant/gv">gv</a></li>
+<li><a href="https://github.com/FiloSottile/gvt">gvt</a> - Recursively retrieve and vendor packages.</li>
+<li><a href="https://github.com/govend/govend">govend</a> - Manage dependencies like <code>go get</code> but for <code>/vendor</code>.  </li>
+<li><a href="https://github.com/Masterminds/glide">Glide</a> - Manage packages like composer, npm, bundler, or other languages.</li>
+<li><a href="https://github.com/dpw/vendetta">Vendetta</a></li>
+<li><a href="https://github.com/rancher/trash">trash</a></li>
+<li><a href="https://github.com/toxeus/gsv">gsv</a></li>
+<li><a href="https://github.com/mattn/gom">gom</a></li>
+<li><a href="https://github.com/yaa110/rubigo">Rubigo</a> - Golang vendor utility and package manager</li>
+</ul>
+<h2 id="pkg-copy-built-using-gopath-modification-supports-fetching-specific-version">Pkg copy, built using GOPATH modification, supports fetching specific version<a class="headerlink" href="#pkg-copy-built-using-gopath-modification-supports-fetching-specific-version" title="Permanent link"></a></h2>
+<p>Copy packages locally. When building modify the GOPATH or use the GO 1.5 <code>GO15VENDOREXPERIMENT</code> to reference the local package store. Not only records specific version, but also fetches specific version.</p>
+<table>
+<thead>
+<tr>
+<th align="left"><strong>gogradle</strong></th>
+<th align="left"><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/blindpirate/gogradle" title="GitHub Repository: blindpirate/gogradle">blindpirate/gogradle</a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Title</td>
+<td align="left">A Full-featured Build Tool for Golang</td>
+</tr>
+<tr>
+<td align="left">Author</td>
+<td align="left">Bo Zhang</td>
+</tr>
+<tr>
+<td align="left">Categories</td>
+<td align="left">Project-scoped dependencies, Go version management, Vendoring, Version/Commit locking, Transitive dependency, Automatic build. Support All platforms</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th align="left"><strong>trash</strong></th>
+<th align="left"><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/rancher/trash" title="GitHub Repository: rancher/trash">rancher/trash</a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Title</td>
+<td align="left">Minimalistic Go vendored code manager</td>
+</tr>
+<tr>
+<td align="left">Author</td>
+<td align="left">Ivan Mikushin, Darren Shepherd</td>
+</tr>
+<tr>
+<td align="left">Categories</td>
+<td align="left">Vendoring, Version/Commit locking, Pruning unimported code, Using package forks. Does not support Windows.</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><strong>glide</strong></td>
+<td align="left"><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/Masterminds/glide" title="GitHub Repository: Masterminds/glide">Masterminds/glide</a></td>
+</tr>
+<tr>
+<td align="left">Title</td>
+<td align="left">Lightweight Vendor Package Manager</td>
+</tr>
+<tr>
+<td align="left">Author</td>
+<td align="left">Matt Butcher and Matt Farina</td>
+</tr>
+<tr>
+<td align="left">Categories</td>
+<td align="left">Retrieve and manage packages in your <code>vendor/</code> directory using the <code>GO15VENDOREXPERIMENT</code>.</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><strong>gopm</strong></td>
+<td align="left"><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/gpmgo/gopm" title="GitHub Repository: gpmgo/gopm">gpmgo/gopm</a></td>
+</tr>
+<tr>
+<td align="left">Title</td>
+<td align="left">Package manage and build tool in Go</td>
+</tr>
+<tr>
+<td align="left">Author</td>
+<td align="left">Jiahua Chen</td>
+</tr>
+<tr>
+<td align="left">Categories</td>
+<td align="left">Revision Locking (git, mercurial, bazaar). Copies into ".vendor/src".</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><strong>gom</strong></td>
+<td align="left"><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/mattn/gom" title="GitHub Repository: mattn/gom">mattn/gom</a></td>
+</tr>
+<tr>
+<td align="left">Title</td>
+<td align="left">Go Manager - bundle for go</td>
+</tr>
+<tr>
+<td align="left">Author</td>
+<td align="left">Yasuhiro Matsumoto</td>
+</tr>
+<tr>
+<td align="left">Categories</td>
+<td align="left">Vendoring/Bundling. Copies into "_vendor/src"</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><strong>bunch</strong></td>
+<td align="left"><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/dkulchenko/bunch" title="GitHub Repository: dkulchenko/bunch">dkulchenko/bunch</a></td>
+</tr>
+<tr>
+<td align="left">Title</td>
+<td align="left">npm-like tool for managing Go dependencies</td>
+</tr>
+<tr>
+<td align="left">Author</td>
+<td align="left">Daniil Kulchenko</td>
+</tr>
+<tr>
+<td align="left">Categories</td>
+<td align="left">Vendoring/Bundling/Revision Locking. Copies into ".vendor". Does NOT fully support windows.</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><strong>goop</strong></td>
+<td align="left"><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/nitrous-io/goop" title="GitHub Repository: nitrous-io/goop">nitrous-io/goop</a></td>
+</tr>
+<tr>
+<td align="left">Title</td>
+<td align="left">A dependency manager for Go (golang), inspired by Bundler.</td>
+</tr>
+<tr>
+<td align="left">Author</td>
+<td align="left">Nitrous.IO</td>
+</tr>
+<tr>
+<td align="left">Categories</td>
+<td align="left">Vendoring, Revision Locking. Copies into ".vendor/src". Does NOT fully support windows.</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><strong>govend</strong></td>
+<td align="left"><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/govend/govend" title="GitHub Repository: govend/govend">govend/govend</a></td>
+</tr>
+<tr>
+<td align="left">Title</td>
+<td align="left">A simple tool to vendor Go package dependencies. It's like <code>go get</code> for vendoring.</td>
+</tr>
+<tr>
+<td align="left">Author</td>
+<td align="left">Jack Spirou</td>
+</tr>
+<tr>
+<td align="left">Categories</td>
+<td align="left">Vendor and lock revisions of packages recursively into the "vendor" directory with <code>go get</code> commands/flags. Supports Go 1.5+ and Windows. Does not alter <code>$GOPATH</code> and works with normal <code>go</code> commands/tooling.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pkg-copy-build-using-gopath--modification">Pkg copy, build using GOPATH  modification<a class="headerlink" href="#pkg-copy-build-using-gopath--modification" title="Permanent link"></a></h2>
+<p>Copy packages locally. When building modify the GOPATH to reference the local package store.</p>
+<table>
+<thead>
+<tr>
+<th align="left"><strong>godep</strong></th>
+<th align="left"><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/tools/godep" title="GitHub Repository: tools/godep">tools/godep</a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Title</td>
+<td align="left">Helps build packages reproducibly by fixing their dependencies</td>
+</tr>
+<tr>
+<td align="left">Author</td>
+<td align="left">Keith Rarick</td>
+</tr>
+<tr>
+<td align="left">Categories</td>
+<td align="left">Vendoring, Version Recording. Copies into "Godep/_workspace/src".</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><strong>wgo</strong></td>
+<td align="left"><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/skelterjohn/wgo" title="GitHub Repository: skelterjohn/wgo">skelterjohn/wgo</a></td>
+</tr>
+<tr>
+<td align="left">Title</td>
+<td align="left">Managed workspaces on top of the go tool</td>
+</tr>
+<tr>
+<td align="left">Author</td>
+<td align="left">John Asmuth</td>
+</tr>
+<tr>
+<td align="left">Categories</td>
+<td align="left">local GOPATH can be configured.</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><strong>gb</strong></td>
+<td align="left"><a href="http://getgb.io/">http://getgb.io/</a></td>
+</tr>
+<tr>
+<td align="left">Title</td>
+<td align="left">Project-based workspaces and dependency management</td>
+</tr>
+<tr>
+<td align="left">Author</td>
+<td align="left">Dave Cheney</td>
+</tr>
+<tr>
+<td align="left">Categories</td>
+<td align="left">Project-based workspaces, vendoring, version locking. Manages dependencies in /vendor/src</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><strong>goat</strong></td>
+<td align="left"><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/mediocregopher/goat" title="GitHub Repository: mediocregopher/goat">mediocregopher/goat</a></td>
+</tr>
+<tr>
+<td align="left">Title</td>
+<td align="left">Simple go dependency manager</td>
+</tr>
+<tr>
+<td align="left">Author</td>
+<td align="left">Brian Picciano</td>
+</tr>
+<tr>
+<td align="left">Categories</td>
+<td align="left">Project-based workspaces and vendoring</td>
+</tr>
+</tbody>
+</table>
+<h2 id="revision-locking">Revision Locking<a class="headerlink" href="#revision-locking" title="Permanent link"></a></h2>
+<p>Package source control versions are recorded. Versions are updated into the GOPATH package tree.
+Requires switching GOPATH for every project.</p>
+<table>
+<thead>
+<tr>
+<th align="left"><strong>glock</strong></th>
+<th align="left"><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/robfig/glock" title="GitHub Repository: robfig/glock">robfig/glock</a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Title</td>
+<td align="left">Lock dependencies to specific revisions.</td>
+</tr>
+<tr>
+<td align="left">Author</td>
+<td align="left">Rob Figueiredo</td>
+</tr>
+<tr>
+<td align="left">Categories</td>
+<td align="left">Revision Locking (git, mercurial, bzr, svn)</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><strong>gobs</strong></td>
+<td align="left"><a class="magiclink magiclink-bitbucket magiclink-repository" href="https://bitbucket.org/vegansk/gobs" title="Bitbucket Repository: vegansk/gobs">vegansk/gobs</a></td>
+</tr>
+<tr>
+<td align="left">Title</td>
+<td align="left">Build system and package manager for go language</td>
+</tr>
+<tr>
+<td align="left">Author</td>
+<td align="left">Anatoly Galiulin</td>
+</tr>
+<tr>
+<td align="left">Categories</td>
+<td align="left">Revision Locking (git). Requires bash, no Windows support.</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><strong>godeps</strong></td>
+<td align="left"><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/rogpeppe/godeps" title="GitHub Repository: rogpeppe/godeps">rogpeppe/godeps</a></td>
+</tr>
+<tr>
+<td align="left">Title</td>
+<td align="left">Print, fetch and update dependencies with care. In production use by Canonical. The first tool with this name!</td>
+</tr>
+<tr>
+<td align="left">Author</td>
+<td align="left">Roger Peppe</td>
+</tr>
+<tr>
+<td align="left">Categories</td>
+<td align="left">Revision Locking (git, mercurial, bzr)</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><strong>gopack</strong></td>
+<td align="left"><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/d2fn/gopack" title="GitHub Repository: d2fn/gopack">d2fn/gopack</a></td>
+</tr>
+<tr>
+<td align="left">Title</td>
+<td align="left">Dependency management for go inspired by rebar</td>
+</tr>
+<tr>
+<td align="left">Author</td>
+<td align="left">Dietrich Featherston</td>
+</tr>
+<tr>
+<td align="left">Categories</td>
+<td align="left">Revision Locking (git)</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><strong>gopin</strong></td>
+<td align="left"><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/laher/gopin" title="GitHub Repository: laher/gopin">laher/gopin</a></td>
+</tr>
+<tr>
+<td align="left">Title</td>
+<td align="left">Experimental go-get fork with support for tags and alternative repos</td>
+</tr>
+<tr>
+<td align="left">Author</td>
+<td align="left">Go Package Manager</td>
+</tr>
+<tr>
+<td align="left">Categories</td>
+<td align="left">Revision Locking (git)</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><strong>gigo</strong></td>
+<td align="left"><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/LyricalSecurity/gigo" title="GitHub Repository: LyricalSecurity/gigo">LyricalSecurity/gigo</a></td>
+</tr>
+<tr>
+<td align="left">Title</td>
+<td align="left">Helps provide go get support for private repositories, pip for golang</td>
+</tr>
+<tr>
+<td align="left">Author</td>
+<td align="left">Lyrical Security</td>
+</tr>
+<tr>
+<td align="left">Categories</td>
+<td align="left">Vendoring, Revision Locking (git). Does not appear to copy files.</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><strong>gorepoman</strong></td>
+<td align="left"><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/fullstorydev/gorepoman" title="GitHub Repository: fullstorydev/gorepoman">fullstorydev/gorepoman</a></td>
+</tr>
+<tr>
+<td align="left">Title</td>
+<td align="left">Super powered <code>go get</code> for managing revisions in a monorepo</td>
+</tr>
+<tr>
+<td align="left">Author</td>
+<td align="left">FullStory</td>
+</tr>
+<tr>
+<td align="left">Categories</td>
+<td align="left">Revision Locking (git). Does not alter <code>$GOPATH</code> and works with normal <code>go</code> commands/tooling. IDE friendly. Easy to reconcile local changes, submit changes upstream.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pkg-copy-with-import-path-re-write-as-of-go-15-this-is-no-longer-the-recommended-practice">Pkg copy with import path re-write (As of Go 1.5, this is no longer the recommended practice)<a class="headerlink" href="#pkg-copy-with-import-path-re-write-as-of-go-15-this-is-no-longer-the-recommended-practice" title="Permanent link"></a></h2>
+<p>Vendoring with import path rewriting takes the 3<sup>rd</sup> party source code that is referenced in your project and makes a copy of that code inside a new folder within the project. It re-writes the import paths so there is a single copy of all packages. GOPATH is not modified at any time.</p>
+<table>
+<thead>
+<tr>
+<th align="left"><strong>party</strong></th>
+<th align="left"><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/mjibson/party" title="GitHub Repository: mjibson/party">mjibson/party</a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Author</td>
+<td align="left">Matt Jibson</td>
+</tr>
+<tr>
+<td align="left">Categories</td>
+<td align="left">Vendoring, Copies into "_third_party". Does not analyze dependencies first. No inspection.</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><strong>govendor</strong></td>
+<td align="left"><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/kardianos/govendor" title="GitHub Repository: kardianos/govendor">kardianos/govendor</a></td>
+</tr>
+<tr>
+<td align="left">Title</td>
+<td align="left">Copy, re-write, and list dependent package status.</td>
+</tr>
+<tr>
+<td align="left">Author</td>
+<td align="left">Daniel Theophanes</td>
+</tr>
+<tr>
+<td align="left">Categories</td>
+<td align="left">Pkg Copy,Import rewrite, record VCS version. Copies into "internal" or "vendor".</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><strong>vendorize</strong></td>
+<td align="left"><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/kisielk/vendorize" title="GitHub Repository: kisielk/vendorize">kisielk/vendorize</a></td>
+</tr>
+<tr>
+<td align="left">Author</td>
+<td align="left">Kamil Kisiel</td>
+</tr>
+<tr>
+<td align="left">Categories</td>
+<td align="left">Vendoring. Copies into "3rdparty".</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><strong>nut</strong></td>
+<td align="left"><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/jingweno/nut" title="GitHub Repository: jingweno/nut">jingweno/nut</a></td>
+</tr>
+<tr>
+<td align="left">Author</td>
+<td align="left">Jingwen Owen Ou</td>
+</tr>
+<tr>
+<td align="left">Categories</td>
+<td align="left">Pkg Copy &amp; Import rewrite. Copies into "vendor".</td>
+</tr>
+</tbody>
+</table>
+<h2 id="vendor-utilities">Vendor Utilities<a class="headerlink" href="#vendor-utilities" title="Permanent link"></a></h2>
+<p>Not full vendor tool, but may still provide value.</p>
+<table>
+<thead>
+<tr>
+<th align="left"><strong>prewrite</strong></th>
+<th align="left"><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/dmitris/prewrite" title="GitHub Repository: dmitris/prewrite">dmitris/prewrite</a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Author</td>
+<td align="left">Dmitry Savintsev</td>
+</tr>
+<tr>
+<td align="left">Categories</td>
+<td align="left">Import re-writer, add or remove specified prefix</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th align="left"><strong>git freeze</strong></th>
+<th align="left"><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/nicerobot/git-freeze" title="GitHub Repository: nicerobot/git-freeze">nicerobot/git-freeze</a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Author</td>
+<td align="left">Robert Nix (nicerobot)</td>
+</tr>
+<tr>
+<td align="left">Categories</td>
+<td align="left">Easy Go vendoring via git submodule</td>
+</tr>
+</tbody>
+</table>
+<h2 id="import-proxies">Import Proxies<a class="headerlink" href="#import-proxies" title="Permanent link"></a></h2>
+<p>Import Proxies act as a man in the middle between the Go tool and the VCS. It parses the data stream while the repository is being cloned.</p>
+<table>
+<thead>
+<tr>
+<th align="left"><strong>gopkg.in</strong></th>
+<th align="left"><a href="https://gopkg.in">https://gopkg.in</a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Title</td>
+<td align="left">Redirect the go tool onto well defined GitHub repositories. Versioning with tags and branches or the repository name.</td>
+</tr>
+<tr>
+<td align="left">Author</td>
+<td align="left">Gustavo Niemeyer</td>
+</tr>
+<tr>
+<td align="left">Categories</td>
+<td align="left">Import Proxy (GitHub)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="go-version-managers">Go Version Managers<a class="headerlink" href="#go-version-managers" title="Permanent link"></a></h2>
+<p>Go Version Managers allow you to have multiple versions of Go installed on your machine. It allows you to switch between those versions.</p>
+<table>
+<thead>
+<tr>
+<th align="left"><strong>goenv</strong></th>
+<th align="left"><a class="magiclink magiclink-bitbucket magiclink-repository" href="https://bitbucket.org/ymotongpoo/goenv" title="Bitbucket Repository: ymotongpoo/goenv">ymotongpoo/goenv</a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Title</td>
+<td align="left">Go environment manager</td>
+</tr>
+<tr>
+<td align="left">Author</td>
+<td align="left">Yoshifumi YAMAGUCHI</td>
+</tr>
+<tr>
+<td align="left">Categories</td>
+<td align="left">Go Version Manager</td>
+</tr>
+</tbody>
+</table>
+<h2 id="client-app-test-packages">Client App Test Packages<a class="headerlink" href="#client-app-test-packages" title="Permanent link"></a></h2>
+<p>Here is a list of packages that authors can use to test their tools against.</p>
+<table>
+<thead>
+<tr>
+<th align="left"><strong>beego-mgo</strong></th>
+<th align="left"><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/goinggo/beego-mgo" title="GitHub Repository: goinggo/beego-mgo">goinggo/beego-mgo</a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Author</td>
+<td align="left">Bill Kennedy</td>
+</tr>
+<tr>
+<td align="left">Desc</td>
+<td align="left">Sample Application For Using the Beego web framework with MGO</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><strong>revel-mgo</strong></td>
+<td align="left"><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/goinggo/revel-mgo" title="GitHub Repository: goinggo/revel-mgo">goinggo/revel-mgo</a></td>
+</tr>
+<tr>
+<td align="left">Author</td>
+<td align="left">Bill Kennedy</td>
+</tr>
+<tr>
+<td align="left">Desc</td>
+<td align="left">Sample revel project with mgo support</td>
+</tr>
+</tbody>
+</table>
+<h2 id="abandoned-tools">Abandoned Tools<a class="headerlink" href="#abandoned-tools" title="Permanent link"></a></h2>
+<ul>
+<li><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/coreos/third_party.go" title="GitHub Repository: coreos/third_party.go">coreos/third_party.go</a></li>
+<li><a href="http://godoc.org/kylelemons.net/go/rx">http://godoc.org/kylelemons.net/go/rx</a></li>
+<li><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/theplant/pak" title="GitHub Repository: theplant/pak">theplant/pak</a></li>
+<li><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/msiebuhr/git-version-proxy" title="GitHub Repository: msiebuhr/git-version-proxy">msiebuhr/git-version-proxy</a></li>
+</ul>
+<h2 id="not-written-in-go">Not Written in Go<a class="headerlink" href="#not-written-in-go" title="Permanent link"></a></h2>
+<p>These tools are recorded for completeness, but it is suggested not to use them as they are platform specific.
+ * <a class="magiclink magiclink-github magiclink-repository" href="https://github.com/rosylilly/gondler" title="GitHub Repository: rosylilly/gondler">rosylilly/gondler</a>
+ * <a class="magiclink magiclink-github magiclink-repository" href="https://github.com/VividCortex/johnny-deps" title="GitHub Repository: VividCortex/johnny-deps">VividCortex/johnny-deps</a>
+ * <a class="magiclink magiclink-github magiclink-repository" href="https://github.com/moovweb/gvm" title="GitHub Repository: moovweb/gvm">moovweb/gvm</a>
+ * <a class="magiclink magiclink-github magiclink-repository" href="https://github.com/pote/gpm" title="GitHub Repository: pote/gpm">pote/gpm</a>
+ * <a class="magiclink magiclink-github magiclink-repository" href="https://github.com/brettlangdon/git-vendor" title="GitHub Repository: brettlangdon/git-vendor">brettlangdon/git-vendor</a>
+ * <a class="magiclink magiclink-github magiclink-repository" href="https://github.com/yaa110/rubigo" title="GitHub Repository: yaa110/rubigo">yaa110/rubigo</a> - written in Rust</p>
+                
+                  
+                    
+
+<hr>
+<div class="md-source-date">
+  <small>
+    
+      Last update: 2021-06-30
+    
+  </small>
+</div>
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../OpenBSD/" class="md-footer__link md-footer__link--prev" aria-label="Previous: OpenBSD" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              OpenBSD
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../PackagePublishing/" class="md-footer__link md-footer__link--next" aria-label="Next: PackagePublishing" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              PackagePublishing
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.sections", "navigation.expand", "toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.477d984a.min.js", "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.82b56eb2.min.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

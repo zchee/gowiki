@@ -1,0 +1,3606 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Personal fork of Go Programming Language Wiki">
+      
+      
+      
+      
+        <link rel="canonical" href="https://zchee.github.io/golang-wiki/Performance/">
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.9">
+    
+    
+      
+        <title>Performance - Go Programming Language Wiki</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ca7ac06f.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.f1a3b89f.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#2094f3">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+  
+
+
+
+  
+  
+
+
+
+  <script>window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-89201129-1","auto"),ga("set","anonymizeIp",!0),ga("send","pageview"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){var e;this.value&&(e=document.location.pathname,ga("send","pageview",e+"?q="+this.value))}),"undefined"!=typeof location$&&location$.subscribe(function(e){ga("send","pageview",e.pathname)})})</script>
+  <script async src="https://www.google-analytics.com/analytics.js"></script>
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="preference" data-md-color-primary="blue" data-md-color-accent="blue">
+  
+    
+    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#debugging-performance-issues-in-go-programs" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Go Programming Language Wiki" class="md-header__button md-logo" aria-label="Go Programming Language Wiki" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Go Programming Language Wiki
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Performance
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/zchee/golang-wiki/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zchee/golang-wiki
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Go Programming Language Wiki" class="md-nav__button md-logo" aria-label="Go Programming Language Wiki" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Go Programming Language Wiki
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/zchee/golang-wiki/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zchee/golang-wiki
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Home/" class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Articles/" class="md-nav__link">
+        Articles
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../AssemblyPolicy/" class="md-nav__link">
+        AssemblyPolicy
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../AVX512/" class="md-nav__link">
+        AVX512
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Benchmarks/" class="md-nav__link">
+        Benchmarks
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Blogs/" class="md-nav__link">
+        Blogs
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Books/" class="md-nav__link">
+        Books
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../BoundingResourceUse/" class="md-nav__link">
+        BoundingResourceUse
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cgo/" class="md-nav__link">
+        cgo
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ChromeOS/" class="md-nav__link">
+        ChromeOS
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CodeReview/" class="md-nav__link">
+        CodeReview
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CodeReviewComments/" class="md-nav__link">
+        CodeReviewComments
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CodeReviewConcurrency/" class="md-nav__link">
+        CodeReviewConcurrency
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CodeTools/" class="md-nav__link">
+        CodeTools
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Comments/" class="md-nav__link">
+        Comments
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CommitMessage/" class="md-nav__link">
+        CommitMessage
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CommonMistakes/" class="md-nav__link">
+        CommonMistakes
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CompilerOptimizations/" class="md-nav__link">
+        CompilerOptimizations
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Conferences/" class="md-nav__link">
+        Conferences
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Configuring-GoLand-for-WebAssembly/" class="md-nav__link">
+        Configuring GoLand for WebAssembly
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Contributing-to-gopls/" class="md-nav__link">
+        Contributing to gopls
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CoreDumpDebugging/" class="md-nav__link">
+        CoreDumpDebugging
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Courses/" class="md-nav__link">
+        Courses
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CreatingSubRepository/" class="md-nav__link">
+        CreatingSubRepository
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CSSStyleGuide/" class="md-nav__link">
+        CSSStyleGuide
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CustomPprofProfiles/" class="md-nav__link">
+        CustomPprofProfiles
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Darwin/" class="md-nav__link">
+        Darwin
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DashboardBuilders/" class="md-nav__link">
+        DashboardBuilders
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Deprecated/" class="md-nav__link">
+        Deprecated
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DesignDocuments/" class="md-nav__link">
+        DesignDocuments
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DevExp/" class="md-nav__link">
+        DevExp
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Diagnostics/" class="md-nav__link">
+        Diagnostics
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Download-build-farm-failed-logs-and-debugging/" class="md-nav__link">
+        Download build farm failed logs and debugging
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DragonFly-BSD/" class="md-nav__link">
+        DragonFly BSD
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Errors/" class="md-nav__link">
+        Errors
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ErrorValueFAQ/" class="md-nav__link">
+        ErrorValueFAQ
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ExperienceReports/" class="md-nav__link">
+        ExperienceReports
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../FileTreeDocumentation/" class="md-nav__link">
+        FileTreeDocumentation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../FreeBSD/" class="md-nav__link">
+        FreeBSD
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../FromXToGo/" class="md-nav__link">
+        FromXToGo
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Frozen/" class="md-nav__link">
+        Frozen
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Gardening/" class="md-nav__link">
+        Gardening
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GccgoCrossCompilation/" class="md-nav__link">
+        GccgoCrossCompilation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GcToolchainTricks/" class="md-nav__link">
+        GcToolchainTricks
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GerritAccess/" class="md-nav__link">
+        GerritAccess
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GerritBot/" class="md-nav__link">
+        GerritBot
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GithubAccess/" class="md-nav__link">
+        GithubAccess
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GitHubCodeLayout/" class="md-nav__link">
+        GitHubCodeLayout
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go-1.10-Release-Party/" class="md-nav__link">
+        Go 1.10 Release Party
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go-1.6-release-party/" class="md-nav__link">
+        Go 1.6 release party
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go-1.8-Release-Party/" class="md-nav__link">
+        Go 1.8 Release Party
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go-Community-Slides/" class="md-nav__link">
+        Go Community Slides
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go-Release-Cycle/" class="md-nav__link">
+        Go Release Cycle
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go1point1Gotchas/" class="md-nav__link">
+        Go1point1Gotchas
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go2/" class="md-nav__link">
+        Go2
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go2ErrorHandlingFeedback/" class="md-nav__link">
+        Go2ErrorHandlingFeedback
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go2ErrorValuesFeedback/" class="md-nav__link">
+        Go2ErrorValuesFeedback
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Go2GenericsFeedback/" class="md-nav__link">
+        Go2GenericsFeedback
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoArm/" class="md-nav__link">
+        GoArm
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoForCPPProgrammers/" class="md-nav__link">
+        GoForCPPProgrammers
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoGenerateTools/" class="md-nav__link">
+        GoGenerateTools
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoGetProxyConfig/" class="md-nav__link">
+        GoGetProxyConfig
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoGetTools/" class="md-nav__link">
+        GoGetTools
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../golang-tools/" class="md-nav__link">
+        golang tools
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoMips/" class="md-nav__link">
+        GoMips
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Gomote/" class="md-nav__link">
+        Gomote
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GOPATH/" class="md-nav__link">
+        GOPATH
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Gopher/" class="md-nav__link">
+        Gopher
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gopherbot/" class="md-nav__link">
+        gopherbot
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Gophers-Tunisia/" class="md-nav__link">
+        Gophers Tunisia
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gopls-integrator-FAQ/" class="md-nav__link">
+        gopls integrator FAQ
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gopls/" class="md-nav__link">
+        gopls
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoStrings/" class="md-nav__link">
+        GoStrings
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoTalks/" class="md-nav__link">
+        GoTalks
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoUserGroups/" class="md-nav__link">
+        GoUserGroups
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoUsers/" class="md-nav__link">
+        GoUsers
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoVsGenerics/" class="md-nav__link">
+        GoVsGenerics
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../HandlingIssues/" class="md-nav__link">
+        HandlingIssues
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Hashing/" class="md-nav__link">
+        Hashing
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../heapdump13/" class="md-nav__link">
+        heapdump13
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../heapdump14/" class="md-nav__link">
+        heapdump14
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../heapdump15-through-heapdump17/" class="md-nav__link">
+        heapdump15 through heapdump17
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../heapdump15/" class="md-nav__link">
+        heapdump15
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../HostedContinuousIntegration/" class="md-nav__link">
+        HostedContinuousIntegration
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../How-to-ask-for-help/" class="md-nav__link">
+        How to ask for help
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../HowToAsk/" class="md-nav__link">
+        HowToAsk
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../HttpFetch/" class="md-nav__link">
+        HttpFetch
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../HttpStaticFiles/" class="md-nav__link">
+        HttpStaticFiles
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../IDEsAndTextEditorPlugins/" class="md-nav__link">
+        IDEsAndTextEditorPlugins
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../InstallFromSource/" class="md-nav__link">
+        InstallFromSource
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../InterfaceSlice/" class="md-nav__link">
+        InterfaceSlice
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../InvalidFlag/" class="md-nav__link">
+        InvalidFlag
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iota/" class="md-nav__link">
+        Iota
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../IssueLabels/" class="md-nav__link">
+        IssueLabels
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Learn/" class="md-nav__link">
+        Learn
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../LearnConcurrency/" class="md-nav__link">
+        LearnConcurrency
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../LearnErrorHandling/" class="md-nav__link">
+        LearnErrorHandling
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../LearnServerProgramming/" class="md-nav__link">
+        LearnServerProgramming
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../LearnTesting/" class="md-nav__link">
+        LearnTesting
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Linux/" class="md-nav__link">
+        Linux
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../LinuxKernelSignalVectorBug/" class="md-nav__link">
+        LinuxKernelSignalVectorBug
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Livestreams/" class="md-nav__link">
+        Livestreams
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../LockOSThread/" class="md-nav__link">
+        LockOSThread
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MethodSets/" class="md-nav__link">
+        MethodSets
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MinimumRequirements/" class="md-nav__link">
+        MinimumRequirements
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MinorReleases/" class="md-nav__link">
+        MinorReleases
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Mobile/" class="md-nav__link">
+        Mobile
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Modules/" class="md-nav__link">
+        Modules
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MultipleGoRoots/" class="md-nav__link">
+        MultipleGoRoots
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MutexOrChannel/" class="md-nav__link">
+        MutexOrChannel
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../NativeClient/" class="md-nav__link">
+        NativeClient
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../NetBSD/" class="md-nav__link">
+        NetBSD
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../NewSpeakers/" class="md-nav__link">
+        NewSpeakers
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../NoMeToo/" class="md-nav__link">
+        NoMeToo
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../NonEnglish/" class="md-nav__link">
+        NonEnglish
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../NoPlusOne/" class="md-nav__link">
+        NoPlusOne
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../OlderVersions/" class="md-nav__link">
+        OlderVersions
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../OpenBSD/" class="md-nav__link">
+        OpenBSD
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PackageManagementTools/" class="md-nav__link">
+        PackageManagementTools
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PackagePublishing/" class="md-nav__link">
+        PackagePublishing
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PanicAndRecover/" class="md-nav__link">
+        PanicAndRecover
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PerfDashboard/" class="md-nav__link">
+        PerfDashboard
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Performance
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Performance
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#cpu-profiler" class="md-nav__link">
+    CPU Profiler
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#memory-profiler" class="md-nav__link">
+    Memory Profiler
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#blocking-profiler" class="md-nav__link">
+    Blocking Profiler
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#goroutine-profiler" class="md-nav__link">
+    Goroutine Profiler
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#garbage-collector-trace" class="md-nav__link">
+    Garbage Collector Trace
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#memory-allocator-trace" class="md-nav__link">
+    Memory Allocator Trace
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scheduler-trace" class="md-nav__link">
+    Scheduler Trace
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#memory-statistics" class="md-nav__link">
+    Memory Statistics
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#heap-dumper" class="md-nav__link">
+    Heap Dumper
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concluding-remarks" class="md-nav__link">
+    Concluding Remarks
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Plan9/" class="md-nav__link">
+        Plan9
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Podcasts/" class="md-nav__link">
+        Podcasts
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PortingPolicy/" class="md-nav__link">
+        PortingPolicy
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PriorDiscussion/" class="md-nav__link">
+        PriorDiscussion
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Projects/" class="md-nav__link">
+        Projects
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Proposals/" class="md-nav__link">
+        Proposals
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ProviderIntegration/" class="md-nav__link">
+        ProviderIntegration
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Questions/" class="md-nav__link">
+        Questions
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RaceDetector/" class="md-nav__link">
+        RaceDetector
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Range/" class="md-nav__link">
+        Range
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RateLimiting/" class="md-nav__link">
+        RateLimiting
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Rationales/" class="md-nav__link">
+        Rationales
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ResearchPapers/" class="md-nav__link">
+        ResearchPapers
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Resolving-Problems-From-Modified-Module-Path/" class="md-nav__link">
+        Resolving Problems From Modified Module Path
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Screencasts/" class="md-nav__link">
+        Screencasts
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SendingMail/" class="md-nav__link">
+        SendingMail
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SettingGOPATH/" class="md-nav__link">
+        SettingGOPATH
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SignalHandling/" class="md-nav__link">
+        SignalHandling
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SimultaneousAssignment/" class="md-nav__link">
+        SimultaneousAssignment
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SliceTricks/" class="md-nav__link">
+        SliceTricks
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SlowBots/" class="md-nav__link">
+        SlowBots
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Solaris/" class="md-nav__link">
+        Solaris
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Spectre/" class="md-nav__link">
+        Spectre
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Spelling/" class="md-nav__link">
+        Spelling
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SQLDrivers/" class="md-nav__link">
+        SQLDrivers
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SQLInterface/" class="md-nav__link">
+        SQLInterface
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Style/" class="md-nav__link">
+        Style
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SuccessStories/" class="md-nav__link">
+        SuccessStories
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Switch/" class="md-nav__link">
+        Switch
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../TableDrivenTests/" class="md-nav__link">
+        TableDrivenTests
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../TargetSpecific/" class="md-nav__link">
+        TargetSpecific
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../TestComments/" class="md-nav__link">
+        TestComments
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Timeouts/" class="md-nav__link">
+        Timeouts
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Training/" class="md-nav__link">
+        Training
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Ubuntu/" class="md-nav__link">
+        Ubuntu
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vgo/" class="md-nav__link">
+        vgo
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../WebAccessibilityResourcesAndTips/" class="md-nav__link">
+        WebAccessibilityResourcesAndTips
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../WebAssembly/" class="md-nav__link">
+        WebAssembly
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Well-known-struct-tags/" class="md-nav__link">
+        Well known struct tags
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../WhyGo/" class="md-nav__link">
+        WhyGo
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../windows-scoop-install-go-cli/" class="md-nav__link">
+        windows scoop install go cli
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Windows/" class="md-nav__link">
+        Windows
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../WindowsBuild/" class="md-nav__link">
+        WindowsBuild
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../WindowsCrossCompiling/" class="md-nav__link">
+        WindowsCrossCompiling
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../WindowsDLLs/" class="md-nav__link">
+        WindowsDLLs
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../X-Repositories/" class="md-nav__link">
+        X Repositories
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/zchee/golang-wiki/edit/master/docs/Performance.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="debugging-performance-issues-in-go-programs">Debugging performance issues in Go programs<a class="headerlink" href="#debugging-performance-issues-in-go-programs" title="Permanent link"></a></h1>
+<p>&ndash; originally written by Dmitry Vyukov</p>
+<p>Let's assume you have a Go program and want to improve its performance. There
+are several tools available that can help with this task. These tools can help
+you to identify various types of hotspots (CPU, IO, memory), hotspots are the
+places that you need to concentrate on in order to significantly improve
+performance. However, another outcome is possible &ndash; the tools can help you
+identify obvious performance defects in the program. For example, you prepare an
+SQL statement before each query while you could prepare it once at program
+startup. Another example is if an O(N^2) algorithm somehow slipped into where an
+obvious O(N) exists and is expected. In order to identify such cases you need to
+sanity check what you see in profiles. For example for the first case
+significant time spent in SQL statement preparation would be the red flag.</p>
+<p>It's also important to understand various bounding factors for performance. For
+example, if the program communicates via 100 Mbps network link and it is already
+utilizes &gt;90Mbps, there is not much you can do with the program to improve its
+performance. There are similar bounding factors for disk IO, memory consumption
+and computational tasks. With that in mind we can look at the available tools.</p>
+<p>Note: The tools can interfere with each other. For example, precise memory
+profiling skews CPU profiles, goroutine blocking profiling affects scheduler
+trace, etc. Use tools in isolation to get more precise info.</p>
+<h2 id="cpu-profiler">CPU Profiler<a class="headerlink" href="#cpu-profiler" title="Permanent link"></a></h2>
+<p>Go runtime contains built-in CPU profiler, which shows what functions consume
+what percent of CPU time. There are 3 ways you can get access to it:</p>
+<ol>
+<li>
+<p>The simplest one is -cpuprofile flag of 'go test'
+    (<a href="http://golang.org/cmd/go/#hdr-Description_of_testing_flags">http://golang.org/cmd/go/#hdr-Description_of_testing_flags</a>) command. For
+    example, the following command:</p>
+<div class="codehilite"><pre><span></span><code>$ go <span class="nb">test</span> -run<span class="o">=</span>none -bench<span class="o">=</span>ClientServerParallel4 -cpuprofile<span class="o">=</span>cprof net/http
+</code></pre></div>
+
+<p>will profile the given benchmark and write CPU profile into 'cprof' file.
+Then:</p>
+<div class="codehilite"><pre><span></span><code>$ go tool pprof --text http.test cprof
+</code></pre></div>
+
+<p>will print a list of the hottest functions.</p>
+<p>There are several output types available, the most useful ones are:
+<code>--text</code>, <code>--web</code> and <code>--list</code>. Run <code>go tool pprof</code> to get the complete
+list. The obvious drawback of this option is that it works only for tests.</p>
+</li>
+<li>
+<p><a href="http://golang.org/pkg/net/http/pprof">net/http/pprof</a>: This is the ideal
+    solution for network servers. You merely need to import <code>net/http/pprof</code>,
+    and collect profiles with:</p>
+<div class="codehilite"><pre><span></span><code>$ go tool pprof --text mybin  http://myserver:6060:/debug/pprof/profile
+</code></pre></div>
+
+</li>
+<li>
+<p>Manual profile collection. You need to import
+    <a href="http://golang.org/pkg/runtime/pprof/">runtime/pprof</a> and add the following
+    code to main function:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">if</span> <span class="o">*</span><span class="nv">flagCpuprofile</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> {
+    <span class="nv">f</span>, <span class="nv">err</span> :<span class="o">=</span> <span class="nv">os</span>.<span class="nv">Create</span><span class="ss">(</span><span class="o">*</span><span class="nv">flagCpuprofile</span><span class="ss">)</span>
+    <span class="k">if</span> <span class="nv">err</span> <span class="o">!=</span> <span class="nv">nil</span> {
+        <span class="nv">log</span>.<span class="nv">Fatal</span><span class="ss">(</span><span class="nv">err</span><span class="ss">)</span>
+    }
+    <span class="nv">pprof</span>.<span class="nv">StartCPUProfile</span><span class="ss">(</span><span class="nv">f</span><span class="ss">)</span>
+    <span class="nv">defer</span> <span class="nv">pprof</span>.<span class="nv">StopCPUProfile</span><span class="ss">()</span>
+}
+</code></pre></div>
+
+<p>The profile will be written to the specified file, visualize it the same way
+as in the first option.</p>
+</li>
+</ol>
+<p>Here is an example of a profile visualized with <code>--web</code> option:
+[cpu_profile.png]</p>
+<p>You can investigate a single function with <code>--list=funcname</code> option. For
+example, the following profile shows that the time was spent in the <code>append</code>
+function:</p>
+<div class="codehilite"><pre><span></span><code> <span class="o">.</span>      <span class="o">.</span>   <span class="mi">93</span><span class="p">:</span> <span class="k">func</span> <span class="p">(</span><span class="n">bp</span> <span class="o">*</span><span class="n">buffer</span><span class="p">)</span> <span class="n">WriteRune</span><span class="p">(</span><span class="n">r</span> <span class="n">rune</span><span class="p">)</span> <span class="n">error</span> <span class="p">{</span>
+ <span class="o">.</span>      <span class="o">.</span>   <span class="mi">94</span><span class="p">:</span>     <span class="k">if</span> <span class="n">r</span> <span class="o">&lt;</span> <span class="n">utf8</span><span class="o">.</span><span class="n">RuneSelf</span> <span class="p">{</span>
+ <span class="mi">5</span>      <span class="mi">5</span>   <span class="mi">95</span><span class="p">:</span>         <span class="o">*</span><span class="n">bp</span> <span class="o">=</span> <span class="n">append</span><span class="p">(</span><span class="o">*</span><span class="n">bp</span><span class="p">,</span> <span class="n">byte</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+ <span class="o">.</span>      <span class="o">.</span>   <span class="mi">96</span><span class="p">:</span>         <span class="k">return</span> <span class="n">nil</span>
+ <span class="o">.</span>      <span class="o">.</span>   <span class="mi">97</span><span class="p">:</span>     <span class="p">}</span>
+ <span class="o">.</span>      <span class="o">.</span>   <span class="mi">98</span><span class="p">:</span>
+ <span class="o">.</span>      <span class="o">.</span>   <span class="mi">99</span><span class="p">:</span>     <span class="n">b</span> <span class="p">:</span><span class="o">=</span> <span class="o">*</span><span class="n">bp</span>
+ <span class="o">.</span>      <span class="o">.</span>  <span class="mi">100</span><span class="p">:</span>     <span class="n">n</span> <span class="p">:</span><span class="o">=</span> <span class="n">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+ <span class="o">.</span>      <span class="o">.</span>  <span class="mi">101</span><span class="p">:</span>     <span class="k">for</span> <span class="n">n</span><span class="o">+</span><span class="n">utf8</span><span class="o">.</span><span class="n">UTFMax</span> <span class="o">&gt;</span> <span class="n">cap</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+ <span class="o">.</span>      <span class="o">.</span>  <span class="mi">102</span><span class="p">:</span>         <span class="n">b</span> <span class="o">=</span> <span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+ <span class="o">.</span>      <span class="o">.</span>  <span class="mi">103</span><span class="p">:</span>     <span class="p">}</span>
+ <span class="o">.</span>      <span class="o">.</span>  <span class="mi">104</span><span class="p">:</span>     <span class="n">w</span> <span class="p">:</span><span class="o">=</span> <span class="n">utf8</span><span class="o">.</span><span class="n">EncodeRune</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="n">n</span><span class="p">:</span><span class="n">n</span><span class="o">+</span><span class="n">utf8</span><span class="o">.</span><span class="n">UTFMax</span><span class="p">],</span> <span class="n">r</span><span class="p">)</span>
+ <span class="o">.</span>      <span class="o">.</span>  <span class="mi">105</span><span class="p">:</span>     <span class="o">*</span><span class="n">bp</span> <span class="o">=</span> <span class="n">b</span><span class="p">[:</span><span class="n">n</span><span class="o">+</span><span class="n">w</span><span class="p">]</span>
+ <span class="o">.</span>      <span class="o">.</span>  <span class="mi">106</span><span class="p">:</span>     <span class="k">return</span> <span class="n">nil</span>
+ <span class="o">.</span>      <span class="o">.</span>  <span class="mi">107</span><span class="p">:</span> <span class="p">}</span>
+</code></pre></div>
+
+<p>There are also 3 special entries that the profiler uses when it can't unwind
+stack: GC, System and ExternalCode. GC means time spent during garbage
+collection, see Memory Profiler and Garbage Collector Trace sections below for
+optimization suggestions. System means time spent in goroutine scheduler, stack
+management code and other auxiliary runtime code. ExternalCode means time spent
+in native dynamic libraries.</p>
+<p>Here are some hints with respect to how to interpret what you see in the
+profile.</p>
+<p>If you see lots of time spent in <code>runtime.mallocgc</code> function, the program
+potentially makes excessive amount of small memory allocations. The profile will
+tell you where the allocations are coming from. See the memory profiler section
+for suggestions on how to optimize this case.</p>
+<p>If lots of time is spent in channel operations, sync.Mutex code and other
+synchronization primitives or System component, the program probably suffers
+from contention. Consider to restructure program to eliminate frequently
+accessed shared resources. Common techniques for this include
+sharding/partitioning, local buffering/batching and copy-on-write technique.</p>
+<p>If lots of time is spent in <code>syscall.Read/Write</code>, the program potentially makes
+excessive amount of small reads and writes. Bufio wrappers around os.File or
+net.Conn can help in this case.</p>
+<p>If lots of time is spent in GC component, the program either allocates too many
+transient objects or heap size is very small so garbage collections happen too
+frequently. See Garbage Collector Tracer and Memory Profiler sections for
+optimization suggestions.</p>
+<p>Note: For darwin CPU profiler currently only <a href="https://code.google.com/p/go/issues/detail?id=6047">works on El Capitan or newer</a>.</p>
+<p>Note: On windows you need to install Cygwin, Perl and Graphviz to generate
+svg/web profiles.</p>
+<h2 id="memory-profiler">Memory Profiler<a class="headerlink" href="#memory-profiler" title="Permanent link"></a></h2>
+<p>Memory profiler shows what functions allocate heap memory. You can collect it in
+similar ways as CPU profile: with <code>go test --memprofile</code>
+(<a href="http://golang.org/cmd/go/#hdr-Description_of_testing_flags">http://golang.org/cmd/go/#hdr-Description_of_testing_flags</a>), with
+<a href="http://golang.org/pkg/net/http/pprof">net/http/pprof</a> via
+<a href="http://myserver:6060:/debug/pprof/heap">http://myserver:6060:/debug/pprof/heap</a> or by calling
+<a href="http://golang.org/pkg/runtime/pprof/#WriteHeapProfile">runtime/pprof.WriteHeapProfile</a>.</p>
+<p>You can visualize only allocations live at the time of profile collection
+(<code>--inuse_space flag to pprof</code>, default), or all allocations happened since
+program start (<code>--alloc_space</code> flag to <code>pprof</code>). The former is useful for
+profiles collected with net/http/pprof on live applications, the latter is
+useful for profiles collected at program end (otherwise you will see almost
+empty profile).</p>
+<p>Note: the memory profiler is sampling, that is, it collects information only
+about some subset of memory allocations. Probability of sampling an object is
+proportional to its size. You can change the sampling rate with go test
+<code>--memprofilerate</code> flag, or by setting <code>runtime.MemProfileRate</code> variable at
+program startup. The rate of 1 will lead to collection of information about all
+allocations, but it can slow down execution. The default sampling rate is 1
+sample per 512KB of allocated memory.</p>
+<p>You can also visualize number of bytes allocated or number of objects allocated
+(<code>--inuse/alloc_space</code> and <code>--inuse/alloc_objects</code> flags, respectively). The
+profiler tends to sample larger objects during profiling more. But it's
+important to understand that large objects affect memory consumption and GC
+time, while large number of tiny allocations affects execution speed (and GC
+time to some degree as well). So it may be useful to look at both.</p>
+<p>Objects can be persistent or transient. If you have several large persistent
+objects allocated at program start, they will be most likely sampled by the
+profiler (because they are large). Such objects do affect memory consumption and
+GC time, but they do not affect normal execution speed (no memory management
+operations happen on them). On the other hand if you have large number of
+objects with very short life durations, they can be barely represented in the
+profile (if you use the default <code>--inuse_space mode</code>). But they do significantly
+affect execution speed, because they are constantly allocated and freed. So,
+once again, it may be useful to look at both types of objects. So, generally, if
+you want to reduce memory consumption, you need to look at <code>--inuse_space</code>
+profile collected during normal program operation. If you want to improve
+execution speed, look at <code>--alloc_objects</code> profile collected after significant
+running time or at program end.</p>
+<p>There are several flags that control reporting granularity. <code>--functions</code> makes
+pprof report on function level (default). <code>--lines</code> makes pprof report on source
+line level, which is useful if hot functions allocate on different lines. And
+there are also <code>--addresses</code> and <code>--files</code> for exact instruction address and
+file level, respectively.</p>
+<p>There is a useful option for the memory profile &ndash; you can look at it right in
+the browser (provided that you imported <code>net/http/pprof</code>). If you open
+<a href="http://myserver:6060/debug/pprof/heap?debug=1">http://myserver:6060/debug/pprof/heap?debug=1</a> you must see the heap profile
+along the lines of:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">heap</span><span class="w"> </span><span class="nl">profile</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="err">:</span><span class="w"> </span><span class="mi">266528</span><span class="w"> </span><span class="o">[</span><span class="n">123: 11284472</span><span class="o">]</span><span class="w"> </span><span class="err">@</span><span class="w"> </span><span class="n">heap</span><span class="o">/</span><span class="mi">1048576</span><span class="w"></span>
+<span class="mi">1</span><span class="err">:</span><span class="w"> </span><span class="mi">262144</span><span class="w"> </span><span class="o">[</span><span class="n">4: 376832</span><span class="o">]</span><span class="w"> </span><span class="err">@</span><span class="w"> </span><span class="mh">0x28d9f</span><span class="w"> </span><span class="mh">0x2a201</span><span class="w"> </span><span class="mh">0x2a28a</span><span class="w"> </span><span class="mh">0x2624d</span><span class="w"> </span><span class="mh">0x26188</span><span class="w"> </span><span class="mh">0x94ca3</span><span class="w"> </span><span class="mh">0x94a0b</span><span class="w"> </span><span class="mh">0x17add6</span><span class="w"> </span><span class="mh">0x17ae9f</span><span class="w"> </span><span class="mh">0x1069d3</span><span class="w"> </span><span class="mh">0xfe911</span><span class="w"> </span><span class="mh">0xf0a3e</span><span class="w"> </span><span class="mh">0xf0d22</span><span class="w"> </span><span class="mh">0x21a70</span><span class="w"></span>
+<span class="err">#</span><span class="w">   </span><span class="mh">0x2a201</span><span class="w"> </span><span class="n">cnew</span><span class="o">+</span><span class="mh">0xc1</span><span class="w">   </span><span class="n">runtime</span><span class="o">/</span><span class="n">malloc</span><span class="p">.</span><span class="nl">goc</span><span class="p">:</span><span class="mi">718</span><span class="w"></span>
+<span class="err">#</span><span class="w">   </span><span class="mh">0x2a28a</span><span class="w"> </span><span class="n">runtime</span><span class="p">.</span><span class="n">cnewarray</span><span class="o">+</span><span class="mh">0x3a</span><span class="w">          </span><span class="n">runtime</span><span class="o">/</span><span class="n">malloc</span><span class="p">.</span><span class="nl">goc</span><span class="p">:</span><span class="mi">731</span><span class="w"></span>
+<span class="err">#</span><span class="w">   </span><span class="mh">0x2624d</span><span class="w"> </span><span class="n">makeslice1</span><span class="o">+</span><span class="mh">0x4d</span><span class="w">             </span><span class="n">runtime</span><span class="o">/</span><span class="n">slice</span><span class="p">.</span><span class="nl">c</span><span class="p">:</span><span class="mi">57</span><span class="w"></span>
+<span class="err">#</span><span class="w">   </span><span class="mh">0x26188</span><span class="w"> </span><span class="n">runtime</span><span class="p">.</span><span class="n">makeslice</span><span class="o">+</span><span class="mh">0x98</span><span class="w">          </span><span class="n">runtime</span><span class="o">/</span><span class="n">slice</span><span class="p">.</span><span class="nl">c</span><span class="p">:</span><span class="mi">38</span><span class="w"></span>
+<span class="err">#</span><span class="w">   </span><span class="mh">0x94ca3</span><span class="w"> </span><span class="n">bytes</span><span class="p">.</span><span class="n">makeSlice</span><span class="o">+</span><span class="mh">0x63</span><span class="w">            </span><span class="n">bytes</span><span class="o">/</span><span class="n">buffer</span><span class="p">.</span><span class="k">go</span><span class="err">:</span><span class="mi">191</span><span class="w"></span>
+<span class="err">#</span><span class="w">   </span><span class="mh">0x94a0b</span><span class="w"> </span><span class="n">bytes</span><span class="p">.(</span><span class="o">*</span><span class="n">Buffer</span><span class="p">).</span><span class="n">ReadFrom</span><span class="o">+</span><span class="mh">0xcb</span><span class="w">       </span><span class="n">bytes</span><span class="o">/</span><span class="n">buffer</span><span class="p">.</span><span class="k">go</span><span class="err">:</span><span class="mi">163</span><span class="w"></span>
+<span class="err">#</span><span class="w">   </span><span class="mh">0x17add6</span><span class="w">    </span><span class="n">io</span><span class="o">/</span><span class="n">ioutil</span><span class="p">.</span><span class="n">readAll</span><span class="o">+</span><span class="mh">0x156</span><span class="w">         </span><span class="n">io</span><span class="o">/</span><span class="n">ioutil</span><span class="o">/</span><span class="n">ioutil</span><span class="p">.</span><span class="k">go</span><span class="err">:</span><span class="mi">32</span><span class="w"></span>
+<span class="err">#</span><span class="w">   </span><span class="mh">0x17ae9f</span><span class="w">    </span><span class="n">io</span><span class="o">/</span><span class="n">ioutil</span><span class="p">.</span><span class="n">ReadAll</span><span class="o">+</span><span class="mh">0x3f</span><span class="w">          </span><span class="n">io</span><span class="o">/</span><span class="n">ioutil</span><span class="o">/</span><span class="n">ioutil</span><span class="p">.</span><span class="k">go</span><span class="err">:</span><span class="mi">41</span><span class="w"></span>
+<span class="err">#</span><span class="w">   </span><span class="mh">0x1069d3</span><span class="w">    </span><span class="n">godoc</span><span class="o">/</span><span class="n">vfs</span><span class="p">.</span><span class="n">ReadFile</span><span class="o">+</span><span class="mh">0x133</span><span class="w">            </span><span class="n">godoc</span><span class="o">/</span><span class="n">vfs</span><span class="o">/</span><span class="n">vfs</span><span class="p">.</span><span class="k">go</span><span class="err">:</span><span class="mi">44</span><span class="w"></span>
+<span class="err">#</span><span class="w">   </span><span class="mh">0xfe911</span><span class="w"> </span><span class="n">godoc</span><span class="p">.</span><span class="n">func</span><span class="err">·</span><span class="mi">023</span><span class="o">+</span><span class="mh">0x471</span><span class="w">            </span><span class="n">godoc</span><span class="o">/</span><span class="n">meta</span><span class="p">.</span><span class="k">go</span><span class="err">:</span><span class="mi">80</span><span class="w"></span>
+<span class="err">#</span><span class="w">   </span><span class="mh">0xf0a3e</span><span class="w"> </span><span class="n">godoc</span><span class="p">.(</span><span class="o">*</span><span class="n">Corpus</span><span class="p">).</span><span class="n">updateMetadata</span><span class="o">+</span><span class="mh">0x9e</span><span class="w">     </span><span class="n">godoc</span><span class="o">/</span><span class="n">meta</span><span class="p">.</span><span class="k">go</span><span class="err">:</span><span class="mi">101</span><span class="w"></span>
+<span class="err">#</span><span class="w">   </span><span class="mh">0xf0d22</span><span class="w"> </span><span class="n">godoc</span><span class="p">.(</span><span class="o">*</span><span class="n">Corpus</span><span class="p">).</span><span class="n">refreshMetadataLoop</span><span class="o">+</span><span class="mh">0x42</span><span class="w">    </span><span class="n">godoc</span><span class="o">/</span><span class="n">meta</span><span class="p">.</span><span class="k">go</span><span class="err">:</span><span class="mi">141</span><span class="w"></span>
+
+<span class="mi">2</span><span class="err">:</span><span class="w"> </span><span class="mi">4096</span><span class="w"> </span><span class="o">[</span><span class="n">2: 4096</span><span class="o">]</span><span class="w"> </span><span class="err">@</span><span class="w"> </span><span class="mh">0x28d9f</span><span class="w"> </span><span class="mh">0x29059</span><span class="w"> </span><span class="mh">0x1d252</span><span class="w"> </span><span class="mh">0x1d450</span><span class="w"> </span><span class="mh">0x106993</span><span class="w"> </span><span class="mh">0xf1225</span><span class="w"> </span><span class="mh">0xe1489</span><span class="w"> </span><span class="mh">0xfbcad</span><span class="w"> </span><span class="mh">0x21a70</span><span class="w"></span>
+<span class="err">#</span><span class="w">   </span><span class="mh">0x1d252</span><span class="w"> </span><span class="n">newdefer</span><span class="o">+</span><span class="mh">0x112</span><span class="w">              </span><span class="n">runtime</span><span class="o">/</span><span class="n">panic</span><span class="p">.</span><span class="nl">c</span><span class="p">:</span><span class="mi">49</span><span class="w"></span>
+<span class="err">#</span><span class="w">   </span><span class="mh">0x1d450</span><span class="w"> </span><span class="n">runtime</span><span class="p">.</span><span class="n">deferproc</span><span class="o">+</span><span class="mh">0x10</span><span class="w">          </span><span class="n">runtime</span><span class="o">/</span><span class="n">panic</span><span class="p">.</span><span class="nl">c</span><span class="p">:</span><span class="mi">132</span><span class="w"></span>
+<span class="err">#</span><span class="w">   </span><span class="mh">0x106993</span><span class="w">    </span><span class="n">godoc</span><span class="o">/</span><span class="n">vfs</span><span class="p">.</span><span class="n">ReadFile</span><span class="o">+</span><span class="mh">0xf3</span><span class="w">         </span><span class="n">godoc</span><span class="o">/</span><span class="n">vfs</span><span class="o">/</span><span class="n">vfs</span><span class="p">.</span><span class="k">go</span><span class="err">:</span><span class="mi">43</span><span class="w"></span>
+<span class="err">#</span><span class="w">   </span><span class="mh">0xf1225</span><span class="w"> </span><span class="n">godoc</span><span class="p">.(</span><span class="o">*</span><span class="n">Corpus</span><span class="p">).</span><span class="n">parseFile</span><span class="o">+</span><span class="mh">0x75</span><span class="w">      </span><span class="n">godoc</span><span class="o">/</span><span class="n">parser</span><span class="p">.</span><span class="k">go</span><span class="err">:</span><span class="mi">20</span><span class="w"></span>
+<span class="err">#</span><span class="w">   </span><span class="mh">0xe1489</span><span class="w"> </span><span class="n">godoc</span><span class="p">.(</span><span class="o">*</span><span class="n">treeBuilder</span><span class="p">).</span><span class="n">newDirTree</span><span class="o">+</span><span class="mh">0x8e9</span><span class="w">   </span><span class="n">godoc</span><span class="o">/</span><span class="n">dirtrees</span><span class="p">.</span><span class="k">go</span><span class="err">:</span><span class="mi">108</span><span class="w"></span>
+<span class="err">#</span><span class="w">   </span><span class="mh">0xfbcad</span><span class="w"> </span><span class="n">godoc</span><span class="p">.</span><span class="n">func</span><span class="err">·</span><span class="mi">002</span><span class="o">+</span><span class="mh">0x15d</span><span class="w">            </span><span class="n">godoc</span><span class="o">/</span><span class="n">dirtrees</span><span class="p">.</span><span class="k">go</span><span class="err">:</span><span class="mi">100</span><span class="w"></span>
+</code></pre></div>
+
+<p>The numbers in the beginning of each entry <code>("1: 262144 [4: 376832]")</code> represent
+number of currently live objects, amount of memory occupied by live objects,
+total number of allocations and amount of memory occupied by all allocations,
+respectively.</p>
+<p>Optimizations are usually application-specific, but here are some common
+suggestions.</p>
+<ol>
+<li>
+<p>Combine objects into larger objects. For example, replace <code>*bytes.Buffer</code>
+    struct member with <code>bytes.Buffer</code> (you can preallocate buffer for writing by
+    calling <code>bytes.Buffer.Grow</code> later). This will reduce number of memory
+    allocations (faster) and also reduce pressure on garbage collector (faster
+    garbage collections).</p>
+</li>
+<li>
+<p>Local variables that escape from their declaration scope get promoted into
+    heap allocations. Compiler generally can't prove that several variables have
+    the same life time, so it allocates each such variable separately. So you
+    can use the above advise for local variables as well. For example, replace:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="w">   </span><span class="o">//</span><span class="w"> </span><span class="n">copy</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">capturing</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">goroutine</span><span class="w"></span>
+<span class="w">    </span><span class="k">go</span><span class="w"> </span><span class="n">func</span><span class="p">()</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="k">use</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">v</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="p">()</span><span class="w"></span>
+<span class="err">}</span><span class="w"></span>
+</code></pre></div>
+
+<p>with:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="n">struct</span><span class="err">{</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="n">string</span><span class="w"> </span><span class="err">}{</span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="err">}</span><span class="w">   </span><span class="o">//</span><span class="w"> </span><span class="n">copy</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">capturing</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">goroutine</span><span class="w"></span>
+<span class="w">    </span><span class="k">go</span><span class="w"> </span><span class="n">func</span><span class="p">()</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="k">use</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">k</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">v</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="p">()</span><span class="w"></span>
+<span class="err">}</span><span class="w"></span>
+</code></pre></div>
+
+<p>This replaces two memory allocations with a single allocation. However, this
+optimization usually negatively affects code readability, so use it
+reasonably.</p>
+</li>
+<li>
+<p>A special case of allocation combining is slice array preallocation. If you
+    know a typical size of the slice, you can preallocate a backing array for it
+    as follows:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">type</span> <span class="n">X</span> <span class="n">struct</span> <span class="p">{</span>
+    <span class="n">buf</span>      <span class="p">[]</span><span class="n">byte</span>
+    <span class="n">bufArray</span> <span class="p">[</span><span class="mi">16</span><span class="p">]</span><span class="n">byte</span> <span class="o">//</span> <span class="n">Buf</span> <span class="n">usually</span> <span class="n">does</span> <span class="ow">not</span> <span class="n">grow</span> <span class="n">beyond</span> <span class="mi">16</span> <span class="n">bytes</span><span class="o">.</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">MakeX</span><span class="p">()</span> <span class="o">*</span><span class="n">X</span> <span class="p">{</span>
+    <span class="n">x</span> <span class="p">:</span><span class="o">=</span> <span class="o">&amp;</span><span class="n">X</span><span class="p">{}</span>
+    <span class="o">//</span> <span class="n">Preinitialize</span> <span class="n">buf</span> <span class="n">with</span> <span class="n">the</span> <span class="n">backing</span> <span class="n">array</span><span class="o">.</span>
+    <span class="n">x</span><span class="o">.</span><span class="n">buf</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">bufArray</span><span class="p">[:</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">x</span>
+<span class="p">}</span>
+</code></pre></div>
+
+</li>
+<li>
+<p>If possible use smaller data types. For example, use <code>int8</code> instead of
+    <code>int</code>.</p>
+</li>
+<li>
+<p>Objects that do not contain any pointers (note that strings, slices, maps
+    and chans contain implicit pointers), are not scanned by garbage collector.
+    For example, a 1GB byte slice virtually does not affect garbage collection
+    time. So if you remove pointers from actively used objects, it can
+    positively impact garbage collection time. Some possibilities are: replace
+    pointers with indices, split object into two parts one of which does not
+    contain pointers.</p>
+</li>
+<li>
+<p>Use freelists to reuse transient objects and reduce number of allocations.
+    Standard library contains <a href="http://tip.golang.org/pkg/sync/#Pool">sync.Pool</a>
+    type that allows to reuse the same object several times in between garbage
+    collections. However, be aware that, as any manual memory management scheme,
+    incorrect use of sync.Pool can lead to use-after-free bugs.</p>
+</li>
+</ol>
+<p>You can also use the Garbage Collector Trace (see below) to get some insights
+into memory issues.</p>
+<p>TODO(dvyukov): mention that stats are updated in a deferred way: "Memprof stats
+are updated in a deferred way. This is required in order to present a consistent
+picture in the situation when allocs are coming continuously and frees are
+coming in batches afterwards. Several consecutive GCs push the update pipeline
+forward. That's what you observe. So if you profile a live server then any
+sample will give you a consistent snapshot. However, if the program completes
+some activity and you want to collect the snapshot after this activity, then you
+need to execute 2 or 3 GCs before the collection."</p>
+<h2 id="blocking-profiler">Blocking Profiler<a class="headerlink" href="#blocking-profiler" title="Permanent link"></a></h2>
+<p>The blocking profiler shows where goroutine block waiting on synchronization
+primitives (including timer channels). You can collect it in similar ways as CPU
+profile: with <code>go test --blockprofile</code>
+(<a href="http://golang.org/cmd/go/#hdr-Description_of_testing_flags">http://golang.org/cmd/go/#hdr-Description_of_testing_flags</a>), with
+<a href="http://golang.org/pkg/net/http/pprof">net/http/pprof</a> via
+<a href="http://myserver:6060:/debug/pprof/block">http://myserver:6060:/debug/pprof/block</a> or by calling
+<a href="http://golang.org/pkg/runtime/pprof/#Profile.WriteTo">runtime/pprof.Lookup("block").WriteTo</a>.</p>
+<p>But there is significant caveat &ndash; the blocking profiler is not enabled by
+default. <code>go test --blockprofile</code> will enable it for you automatically. However,
+if you use <code>net/http/pprof</code> or <code>runtime/pprof</code>, you need to enable it manually
+(otherwise the profile will be empty). To enable the blocking profiler call
+<a href="http://golang.org/pkg/runtime/#SetBlockProfileRate">runtime.SetBlockProfileRate</a>.
+SetBlockProfileRate controls the fraction of goroutine blocking events that are
+reported in the blocking profile. The profiler aims to sample an average of one
+blocking event per the specified amount of nanoseconds spent blocked. To include
+every blocking event in the profile, set the rate to 1.</p>
+<p>If a function contains several blocking operations and it's not obvious which
+one leads to blocking, use <code>--lines</code> flag to pprof.</p>
+<p>Note that not all blocking is bad. When a goroutine blocks, the underlying
+worker thread simply switches to another goroutine. So blocking in the
+cooperative Go environment is very different from blocking on a mutex in a
+non-cooperative systems (e.g. typical C++ or Java threading libraries, where
+blocking leads to thread idling and expensive thread context switches). To give
+you some feeling, let's consider some examples.</p>
+<p>Blocking on a time.Ticker is usually OK. If a goroutine blocks on a Ticker for
+10 seconds, you will see 10 seconds of blocking in the profile, which is
+perfectly fine. Blocking on <code>sync.WaitGroup</code> is frequently OK. For example, is a
+task takes 10 seconds, the goroutine waiting on a WaitGroup for completion will
+account for 10 seconds of blocking in the profile. Blocking on sync.Cond may or
+may not be OK, depending on the situation. Consumer blocking on a channel
+suggests slow producers or lack of work. Producer blocking on a channel suggests
+that consumers are slower, but this is frequently OK. Blocking on a
+channel-based semaphore shows how much goroutines are gated on the semaphore.
+Blocking on a sync.Mutex or sync.RWMutex is usually bad. You can use <code>--ignore</code>
+flag to pprof to exclude known uninteresting blocking from a profile during
+visualization.</p>
+<p>Blocking of goroutines can lead to two negative consequences:</p>
+<ol>
+<li>
+<p>Program does not scale with processors due to lack of work. Scheduler Trace
+    can help to identify this case.</p>
+</li>
+<li>
+<p>Excessive goroutine blocking/unblocking consumes CPU time. CPU Profiler can
+    help to identify this case (look at the System component).</p>
+</li>
+</ol>
+<p>Here are some common suggestions that can help to reduce goroutine blocking:</p>
+<ol>
+<li>
+<p>Use sufficiently buffered channels in producer-consumer scenarios.
+    Unbuffered channels substantially limit available parallelism in the
+    program.</p>
+</li>
+<li>
+<p>Use <code>sync.RWMutex</code> instead of <code>sync.Mutex</code> for read-mostly workloads.
+    Readers never block other readers in <code>sync.RWMutex</code>, even on implementation
+    level.</p>
+</li>
+<li>
+<p>In some cases it's possible to remove mutexes entirely by using
+    copy-on-write technique. If the protected data structure is modified
+    infrequently and it's feasible to make copies of it, then it can be updated
+    as follows:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">type</span> <span class="n">Config</span> <span class="n">struct</span> <span class="p">{</span>
+    <span class="n">Routes</span>   <span class="n">map</span><span class="p">[</span><span class="n">string</span><span class="p">]</span><span class="n">net</span><span class="o">.</span><span class="n">Addr</span>
+    <span class="n">Backends</span> <span class="p">[]</span><span class="n">net</span><span class="o">.</span><span class="n">Addr</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="n">config</span> <span class="n">atomic</span><span class="o">.</span><span class="n">Value</span>  <span class="o">//</span> <span class="n">actual</span> <span class="n">type</span> <span class="k">is</span> <span class="o">*</span><span class="n">Config</span>
+
+<span class="o">//</span> <span class="n">Worker</span> <span class="n">goroutines</span> <span class="n">use</span> <span class="n">this</span> <span class="n">function</span> <span class="n">to</span> <span class="n">obtain</span> <span class="n">the</span> <span class="n">current</span> <span class="n">config</span><span class="o">.</span>
+  <span class="o">//</span> <span class="n">UpdateConfig</span> <span class="n">must</span> <span class="n">be</span> <span class="n">called</span> <span class="n">at</span> <span class="n">least</span> <span class="n">once</span> <span class="n">before</span> <span class="n">this</span> <span class="k">func</span><span class="o">.</span>
+<span class="k">func</span> <span class="n">CurrentConfig</span><span class="p">()</span> <span class="o">*</span><span class="n">Config</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">config</span><span class="o">.</span><span class="n">Load</span><span class="p">()</span><span class="o">.</span><span class="p">(</span><span class="o">*</span><span class="n">Config</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="o">//</span> <span class="n">Background</span> <span class="n">goroutine</span> <span class="n">periodically</span> <span class="n">creates</span> <span class="n">a</span> <span class="n">new</span> <span class="n">Config</span> <span class="n">object</span>
+<span class="o">//</span> <span class="k">as</span> <span class="n">sets</span> <span class="n">it</span> <span class="k">as</span> <span class="n">current</span> <span class="n">using</span> <span class="n">this</span> <span class="n">function</span><span class="o">.</span>
+<span class="k">func</span> <span class="n">UpdateConfig</span><span class="p">(</span><span class="n">cfg</span> <span class="o">*</span><span class="n">Config</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">config</span><span class="o">.</span><span class="n">Store</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>This pattern prevents the writer from blocking readers during update.</p>
+</li>
+<li>
+<p>Partitioning is another general technique for reducing contention/blocking
+    on shared mutable data structures. Below is an example of how to partition a
+    hashmap:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">type</span> <span class="n">Partition</span> <span class="n">struct</span> <span class="p">{</span>
+    <span class="n">sync</span><span class="o">.</span><span class="n">RWMutex</span>
+    <span class="n">m</span> <span class="n">map</span><span class="p">[</span><span class="n">string</span><span class="p">]</span><span class="n">string</span>
+<span class="p">}</span>
+
+<span class="k">const</span> <span class="n">partCount</span> <span class="o">=</span> <span class="mi">64</span>
+<span class="k">var</span> <span class="n">m</span> <span class="p">[</span><span class="n">partCount</span><span class="p">]</span><span class="n">Partition</span>
+
+<span class="k">func</span> <span class="n">Find</span><span class="p">(</span><span class="n">k</span> <span class="n">string</span><span class="p">)</span> <span class="n">string</span> <span class="p">{</span>
+    <span class="n">idx</span> <span class="p">:</span><span class="o">=</span> <span class="nb">hash</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">%</span> <span class="n">partCount</span>
+    <span class="n">part</span> <span class="p">:</span><span class="o">=</span> <span class="o">&amp;</span><span class="n">m</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+    <span class="n">part</span><span class="o">.</span><span class="n">RLock</span><span class="p">()</span>
+    <span class="n">v</span> <span class="p">:</span><span class="o">=</span> <span class="n">part</span><span class="o">.</span><span class="n">m</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+    <span class="n">part</span><span class="o">.</span><span class="n">RUnlock</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">v</span>
+<span class="p">}</span>
+</code></pre></div>
+
+</li>
+<li>
+<p>Local caching and batching of updates can help to reduce contention on
+    un-partitionable data structures. Below you can see how to batch sends to a
+    channel:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">const</span> <span class="n">CacheSize</span> <span class="o">=</span> <span class="mi">16</span>
+
+<span class="n">type</span> <span class="n">Cache</span> <span class="n">struct</span> <span class="p">{</span>
+    <span class="n">buf</span> <span class="p">[</span><span class="n">CacheSize</span><span class="p">]</span><span class="nb nb-Type">int</span>
+    <span class="n">pos</span> <span class="nb nb-Type">int</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">Send</span><span class="p">(</span><span class="n">c</span> <span class="n">chan</span> <span class="p">[</span><span class="n">CacheSize</span><span class="p">]</span><span class="nb nb-Type">int</span><span class="p">,</span> <span class="n">cache</span> <span class="o">*</span><span class="n">Cache</span><span class="p">,</span> <span class="n">value</span> <span class="nb nb-Type">int</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">cache</span><span class="o">.</span><span class="n">buf</span><span class="p">[</span><span class="n">cache</span><span class="o">.</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">cache</span><span class="o">.</span><span class="n">pos</span><span class="o">++</span>
+    <span class="k">if</span> <span class="n">cache</span><span class="o">.</span><span class="n">pos</span> <span class="o">==</span> <span class="n">CacheSize</span> <span class="p">{</span>
+        <span class="n">c</span> <span class="o">&lt;-</span> <span class="n">cache</span><span class="o">.</span><span class="n">buf</span>
+        <span class="n">cache</span><span class="o">.</span><span class="n">pos</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>This technique is not limited to channels. It can be used to batch updates
+to a map, batch allocations, etc.</p>
+</li>
+<li>
+<p>Use <a href="http://tip.golang.org/pkg/sync/#Pool">sync.Pool</a> for freelists instead
+    of chan-based or mutex-protected freelists. sync.Pool uses smart techniques
+    internally to reduce blocking.</p>
+</li>
+</ol>
+<h2 id="goroutine-profiler">Goroutine Profiler<a class="headerlink" href="#goroutine-profiler" title="Permanent link"></a></h2>
+<p>The goroutine profiler simply gives you current stacks of all live goroutines in
+the process. It can be handy to debug load balancing issues (see Scheduler Trace
+section below), or to debug deadlocks. The profile makes sense only for a
+running app, so go test does not expose it. You can collect the profile with
+<a href="http://golang.org/pkg/net/http/pprof">net/http/pprof</a> via
+<a href="http://myserver:6060:/debug/pprof/goroutine">http://myserver:6060:/debug/pprof/goroutine</a>, and visualize it to svg/pdf or by
+calling
+<a href="http://golang.org/pkg/runtime/pprof/#Profile.WriteTo">runtime/pprof.Lookup("goroutine").WriteTo</a>.
+But the most useful way is to type
+<a href="http://myserver:6060:/debug/pprof/goroutine?debug=2">http://myserver:6060:/debug/pprof/goroutine?debug=2</a> in your browser, which will
+give you symbolized stacks similar to what you see when a program crashes. Note
+that goroutines in "syscall" state consume an OS thread, other goroutines do not
+(except for goroutines that called runtime.LockOSThread, which is,
+unfortunately, not visible in the profile). Note that goroutines in "IO wait"
+state also do not consume threads, they are parked on non-blocking network
+poller (which uses epoll/kqueue/GetQueuedCompletionStatus to unpark goroutines
+later).</p>
+<h2 id="garbage-collector-trace">Garbage Collector Trace<a class="headerlink" href="#garbage-collector-trace" title="Permanent link"></a></h2>
+<p>Aside from the profiling tools, there is another kind of tools available &ndash;
+tracers. They allow to trace garbage collections, memory allocator and goroutine
+scheduler state. To enable the garbage collector (GC) trace, run the program
+with <code>GODEBUG=gctrace=1</code> environment variable:</p>
+<div class="codehilite"><pre><span></span><code>$ <span class="nv">GODEBUG</span><span class="o">=</span><span class="nv">gctrace</span><span class="o">=</span><span class="m">1</span> ./myserver
+</code></pre></div>
+
+<p>Then the program will print output similar to the following during execution:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">gc9</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">:</span> <span class="mi">12</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="mi">744</span><span class="o">+</span><span class="mi">8</span> <span class="n">us</span><span class="p">,</span> <span class="mi">2</span> <span class="o">-&gt;</span> <span class="mi">10</span> <span class="n">MB</span><span class="p">,</span> <span class="mi">108615</span> <span class="p">(</span><span class="mi">593983</span><span class="o">-</span><span class="mi">485368</span><span class="p">)</span> <span class="n">objects</span><span class="p">,</span> <span class="mi">4825</span><span class="o">/</span><span class="mi">3620</span><span class="o">/</span><span class="mi">0</span> <span class="n">sweeps</span><span class="p">,</span> <span class="mi">0</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="n">handoff</span><span class="p">,</span> <span class="mi">6</span><span class="p">(</span><span class="mi">91</span><span class="p">)</span> <span class="n">steal</span><span class="p">,</span> <span class="mi">16</span><span class="o">/</span><span class="mi">1</span><span class="o">/</span><span class="mi">0</span> <span class="n">yields</span>
+<span class="n">gc10</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">:</span> <span class="mi">12</span><span class="o">+</span><span class="mi">6769</span><span class="o">+</span><span class="mi">767</span><span class="o">+</span><span class="mi">3</span> <span class="n">us</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-&gt;</span> <span class="mi">1</span> <span class="n">MB</span><span class="p">,</span> <span class="mi">4222</span> <span class="p">(</span><span class="mi">593983</span><span class="o">-</span><span class="mi">589761</span><span class="p">)</span> <span class="n">objects</span><span class="p">,</span> <span class="mi">4825</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">1898</span> <span class="n">sweeps</span><span class="p">,</span> <span class="mi">0</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="n">handoff</span><span class="p">,</span> <span class="mi">6</span><span class="p">(</span><span class="mi">93</span><span class="p">)</span> <span class="n">steal</span><span class="p">,</span> <span class="mi">16</span><span class="o">/</span><span class="mi">10</span><span class="o">/</span><span class="mi">2</span> <span class="n">yields</span>
+<span class="n">gc11</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">:</span> <span class="mi">799</span><span class="o">+</span><span class="mi">3</span><span class="o">+</span><span class="mi">2050</span><span class="o">+</span><span class="mi">3</span> <span class="n">us</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-&gt;</span> <span class="mi">69</span> <span class="n">MB</span><span class="p">,</span> <span class="mi">831819</span> <span class="p">(</span><span class="mi">1484009</span><span class="o">-</span><span class="mi">652190</span><span class="p">)</span> <span class="n">objects</span><span class="p">,</span> <span class="mi">4825</span><span class="o">/</span><span class="mi">691</span><span class="o">/</span><span class="mi">0</span> <span class="n">sweeps</span><span class="p">,</span> <span class="mi">0</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="n">handoff</span><span class="p">,</span> <span class="mi">5</span><span class="p">(</span><span class="mi">105</span><span class="p">)</span> <span class="n">steal</span><span class="p">,</span> <span class="mi">16</span><span class="o">/</span><span class="mi">1</span><span class="o">/</span><span class="mi">0</span> <span class="n">yields</span>
+</code></pre></div>
+
+<p>Let's consider the meaning of these numbers. One line per GC is printed. The
+first number ("gc9") is the number of GC (this is the 9-th GC since program
+start). The number in parens ("(2)") is the number of worker threads
+participated in the GC. The next 4 numbers ("12+1+744+8 us") mean
+stop-the-world, sweeping, marking and waiting for worker threads to finish, in
+microseconds, respectively. The next 2 numbers ("2 -&gt; 10 MB") mean size of live
+heap after the previous GC and full heap size (including garbage) before the
+current GC. The next 3 numbers ("108615 (593983-485368) objects") are total
+number of objects in heap (including garbage) and total number of memory
+allocation and free operations. The next 3 numbers ("4825/3620/0 sweeps")
+characterize sweep phase (of the previous GC): there were total 4825 memory
+spans, 3620 were swept on demand or in background, 0 were swept during
+stop-the-world phase (the rest were unused spans). The next 4 numbers ("0(0)
+handoff, 6(91) steal") characterize load balancing during parallel mark phase:
+there were 0 object handoff operations (0 objects were handoff), and 6 steal
+operations (91 objects were stolen). The last 3 numbers ("16/1/0 yields")
+characterize effectiveness of parallel mark phase: there were total of 17 yield
+operations during waiting for another thread.</p>
+<p>The GC is <a href="http://www.brpreiss.com/books/opus5/html/page424.html">mark-and-sweep
+type</a>. Total GC can be
+expressed as:</p>
+<div class="codehilite"><pre><span></span><code>Tgc = Tseq + Tmark + Tsweep
+</code></pre></div>
+
+<p>where Tseq is time to stop user goroutines and some preparation activities
+(usually small); Tmark is heap marking time, marking happens when all user
+goroutines are stopped, and thus can significantly affect latency of processing;
+Tsweep is heap sweeping time, sweeping generally happens concurrently with
+normal program execution, and so is not so critical for latency.</p>
+<p>Marking time can be approximately expressed as:</p>
+<div class="codehilite"><pre><span></span><code>Tmark = C1*Nlive + C2*MEMlive_ptr + C3*Nlive_ptr
+</code></pre></div>
+
+<p>where Nlive is the number of live objects in the heap during GC, <code>MEMlive_ptr</code>
+is the amount of memory occupied by live objects with pointers, <code>Nlive_ptr</code> is
+the number of pointers in live objects.</p>
+<p>Sweeping time can be approximately expressed as:</p>
+<div class="codehilite"><pre><span></span><code>Tsweep = C4*MEMtotal + C5*MEMgarbage
+</code></pre></div>
+
+<p>where <code>MEMtotal</code> is the total amount of heap memory, <code>MEMgarbage</code> is the amount
+of garbage in the heap.</p>
+<p>Next GC happens after the program has allocated an extra amount of memory
+proportional to the amount already in use. The proportion is controlled by GOGC
+environment variable (100 by default). If GOGC=100 and the program is using 4M
+of heap memory, runtime will trigger GC again when the program gets to 8M. This
+keeps the GC cost in linear proportion to the allocation cost. Adjusting GOGC
+changes the linear constant and also the amount of extra memory used.</p>
+<p>Only sweeping depends on total size of the heap, and sweeping happens
+concurrently with normal program execution. So it can make sense to set GOGC to
+a higher value (200, 300, 500, etc) if you can afford extra memory consumption.
+For example, GOGC=300 can reduce garbage collection overhead by up to 2 times
+while keeping latencies the same (at the cost of 2 times larger heap).</p>
+<p>GC is parallel and generally scales well with hardware parallelism. So it can
+make sense to set GOMAXPROCS to higher value even for sequential programs just
+to speed up garbage collections. However, note that number of garbage collector
+threads is currently bounded by 8.</p>
+<h2 id="memory-allocator-trace">Memory Allocator Trace<a class="headerlink" href="#memory-allocator-trace" title="Permanent link"></a></h2>
+<p>Memory allocator traces simply dumps all memory allocation and free operations
+onto console. It's enabled with GODEBUG=allocfreetrace=1 environment variable.
+The output looks along the lines of:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">tracealloc</span><span class="p">(</span><span class="mh">0xc208062500</span><span class="p">,</span><span class="w"> </span><span class="mh">0x100</span><span class="p">,</span><span class="w"> </span><span class="k">array</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="nf">parse</span><span class="p">.</span><span class="n">Node</span><span class="p">)</span><span class="w"></span>
+<span class="n">goroutine</span><span class="w"> </span><span class="mi">16</span><span class="w"> </span><span class="o">[</span><span class="n">running</span><span class="o">]</span><span class="err">:</span><span class="w"></span>
+<span class="n">runtime</span><span class="p">.</span><span class="n">mallocgc</span><span class="p">(</span><span class="mh">0x100</span><span class="p">,</span><span class="w"> </span><span class="mh">0x3eb7c1</span><span class="p">,</span><span class="w"> </span><span class="mh">0x0</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">runtime</span><span class="o">/</span><span class="n">malloc</span><span class="p">.</span><span class="nl">goc</span><span class="p">:</span><span class="mi">190</span><span class="w"> </span><span class="o">+</span><span class="mh">0x145</span><span class="w"> </span><span class="n">fp</span><span class="o">=</span><span class="mh">0xc2080b39f8</span><span class="w"></span>
+<span class="n">runtime</span><span class="p">.</span><span class="n">growslice</span><span class="p">(</span><span class="mh">0x31f840</span><span class="p">,</span><span class="w"> </span><span class="mh">0xc208060700</span><span class="p">,</span><span class="w"> </span><span class="mh">0x8</span><span class="p">,</span><span class="w"> </span><span class="mh">0x8</span><span class="p">,</span><span class="w"> </span><span class="mh">0x1</span><span class="p">,</span><span class="w"> </span><span class="mh">0x0</span><span class="p">,</span><span class="w"> </span><span class="mh">0x0</span><span class="p">,</span><span class="w"> </span><span class="mh">0x0</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">runtime</span><span class="o">/</span><span class="n">slice</span><span class="p">.</span><span class="nl">goc</span><span class="p">:</span><span class="mi">76</span><span class="w"> </span><span class="o">+</span><span class="mh">0xbb</span><span class="w"> </span><span class="n">fp</span><span class="o">=</span><span class="mh">0xc2080b3a90</span><span class="w"></span>
+<span class="nc">text</span><span class="o">/</span><span class="n">template</span><span class="o">/</span><span class="nf">parse</span><span class="p">.(</span><span class="o">*</span><span class="n">Tree</span><span class="p">).</span><span class="nf">parse</span><span class="p">(</span><span class="mh">0xc2080820e0</span><span class="p">,</span><span class="w"> </span><span class="mh">0xc208023620</span><span class="p">,</span><span class="w"> </span><span class="mh">0x0</span><span class="p">,</span><span class="w"> </span><span class="mh">0x0</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="nc">text</span><span class="o">/</span><span class="n">template</span><span class="o">/</span><span class="nf">parse</span><span class="o">/</span><span class="nf">parse</span><span class="p">.</span><span class="k">go</span><span class="err">:</span><span class="mi">289</span><span class="w"> </span><span class="o">+</span><span class="mh">0x549</span><span class="w"> </span><span class="n">fp</span><span class="o">=</span><span class="mh">0xc2080b3c50</span><span class="w"></span>
+<span class="p">...</span><span class="w"></span>
+
+<span class="n">tracefree</span><span class="p">(</span><span class="mh">0xc208002d80</span><span class="p">,</span><span class="w"> </span><span class="mh">0x120</span><span class="p">)</span><span class="w"></span>
+<span class="n">goroutine</span><span class="w"> </span><span class="mi">16</span><span class="w"> </span><span class="o">[</span><span class="n">running</span><span class="o">]</span><span class="err">:</span><span class="w"></span>
+<span class="n">runtime</span><span class="p">.</span><span class="n">MSpan_Sweep</span><span class="p">(</span><span class="mh">0x73b080</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="n">runtime</span><span class="o">/</span><span class="n">mgc0</span><span class="p">.</span><span class="nl">c</span><span class="p">:</span><span class="mi">1880</span><span class="w"> </span><span class="o">+</span><span class="mh">0x514</span><span class="w"> </span><span class="n">fp</span><span class="o">=</span><span class="mh">0xc20804b8f0</span><span class="w"></span>
+<span class="n">runtime</span><span class="p">.</span><span class="n">MCentral_CacheSpan</span><span class="p">(</span><span class="mh">0x69c858</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="n">runtime</span><span class="o">/</span><span class="n">mcentral</span><span class="p">.</span><span class="nl">c</span><span class="p">:</span><span class="mi">48</span><span class="w"> </span><span class="o">+</span><span class="mh">0x2b5</span><span class="w"> </span><span class="n">fp</span><span class="o">=</span><span class="mh">0xc20804b920</span><span class="w"></span>
+<span class="n">runtime</span><span class="p">.</span><span class="n">MCache_Refill</span><span class="p">(</span><span class="mh">0x737000</span><span class="p">,</span><span class="w"> </span><span class="mh">0xc200000012</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="n">runtime</span><span class="o">/</span><span class="n">mcache</span><span class="p">.</span><span class="nl">c</span><span class="p">:</span><span class="mi">78</span><span class="w"> </span><span class="o">+</span><span class="mh">0x119</span><span class="w"> </span><span class="n">fp</span><span class="o">=</span><span class="mh">0xc20804b950</span><span class="w"></span>
+<span class="p">...</span><span class="w"></span>
+</code></pre></div>
+
+<p>The trace contains address of the memory block, size, type, goroutine id and the
+stack trace. It's probably more useful for debugging, but can give very
+fine-grained info for allocation optimizations as well.</p>
+<h2 id="scheduler-trace">Scheduler Trace<a class="headerlink" href="#scheduler-trace" title="Permanent link"></a></h2>
+<p>Scheduler trace can provide insights into dynamic behavior of the goroutine
+scheduler and allow to debug load balancing and scalability issues. To enable
+the scheduler trace trace, run the program with GODEBUG=schedtrace=1000
+environment variable (the value means period of output, in ms, in this case it's
+once per second):</p>
+<div class="codehilite"><pre><span></span><code>$ <span class="nv">GODEBUG</span><span class="o">=</span><span class="nv">schedtrace</span><span class="o">=</span><span class="m">1000</span> ./myserver
+</code></pre></div>
+
+<p>Then the program will print output similar to the following during execution:</p>
+<div class="codehilite"><pre><span></span><code>SCHED 1004ms: gomaxprocs=4 idleprocs=0 threads=11 idlethreads=4 runqueue=8 [0 1 0 3]
+SCHED 2005ms: gomaxprocs=4 idleprocs=0 threads=11 idlethreads=5 runqueue=6 [1 5 4 0]
+SCHED 3008ms: gomaxprocs=4 idleprocs=0 threads=11 idlethreads=4 runqueue=10 [2 2 2 1]
+</code></pre></div>
+
+<p>The first number ("1004ms") is time since program start. Gomaxprocs is the
+current value of GOMAXPROCS. Idleprocs is the number of idling processors (the
+rest are executing Go code). Threads is the total number of worker threads
+created by the scheduler (threads can be in 3 states: execute Go code
+(gomaxprocs-idleprocs), execute syscalls/cgocalls or idle). Idlethreads is the
+number of idling worker threads. Runqueue is the length of global queue with
+runnable goroutines. The numbers in square brackets ("[0 1 0 3]") are lengths of
+per-processor queues with runnable goroutines. Sum of lengths of global and
+local queues represents the total number of goroutines available for execution.</p>
+<p>Note: You can combine any of the tracers as
+GODEBUG=gctrace=1,allocfreetrace=1,schedtrace=1000.</p>
+<p>Note: There is also detailed scheduler trace, which you can enable with
+GODEBUG=schedtrace=1000,scheddetail=1. It prints detailed info about every
+goroutine, worker thread and processor. We won't describe its format here as
+it's mainly useful for scheduler developers; but you can find details in
+<a href="https://code.google.com/p/go/source/browse/src/pkg/runtime/proc.c">src/pkg/runtime/proc.c</a>.</p>
+<p>The scheduler trace is useful when a program does not scale linearly with
+GOMAXPROCS and/or does not consume 100% of CPU time. The ideal situation is when
+all processors are busy executing Go code, number of threads is reasonable,
+there is plenty of work in all queues and the work is reasonably evenly
+distributed:</p>
+<div class="codehilite"><pre><span></span><code>gomaxprocs=8 idleprocs=0 threads=40 idlethreads=5 runqueue=10 [20 20 20 20 20 20 20 20]
+</code></pre></div>
+
+<p>A bad situation is when something of the above does not hold. For example the
+following sample demonstrates shortage of work to keep all processors busy:</p>
+<div class="codehilite"><pre><span></span><code>gomaxprocs=8 idleprocs=6 threads=40 idlethreads=30 runqueue=0 [0 2 0 0 0 1 0 0]
+</code></pre></div>
+
+<p>Note: use OS-provided means to measure actual CPU utilization as the ultimate
+characteristic. On Unix family of operating system it is top command; on Windows
+it is Task Manager.</p>
+<p>You can use the goroutine profiler to understand where goroutines block in the
+case of work shortage. Note that load imbalance is not ultimately bad as long as
+all processors are busy, it will just cause some moderate load balancing
+overheads.</p>
+<h2 id="memory-statistics">Memory Statistics<a class="headerlink" href="#memory-statistics" title="Permanent link"></a></h2>
+<p>Go runtime exposes coarse-grained memory statistics via
+<a href="http://golang.org/pkg/runtime/#ReadMemStats">runtime.ReadMemStats</a> function.
+The statistics are also exposed via net/http/pprof at the bottom of
+<a href="http://myserver:6060/debug/pprof/heap?debug=1">http://myserver:6060/debug/pprof/heap?debug=1</a>. The statistics are described
+<a href="http://golang.org/pkg/runtime/#MemStats">here</a>. Some of the interesting fields
+are:</p>
+<ol>
+<li>HeapAlloc - current heap size.</li>
+<li>HeapSys - total heap size.</li>
+<li>HeapObjects - total number of objects in the heap.</li>
+<li>HeapReleased - amount of memory released to the OS; runtime releases to the
+    OS memory unused for 5 minutes, you can force this process with
+    runtime/debug.FreeOSMemory.</li>
+<li>Sys - total amount of memory allocated from OS.</li>
+<li>Sys-HeapReleased - effective memory consumption of the program.</li>
+<li>StackSys - memory consumed for goroutine stacks (note that some stacks are
+    allocated from heap and are not accounted here, unfortunately there is no
+    way to get total size of stacks
+    (<a href="https://code.google.com/p/go/issues/detail?id=7468">https://code.google.com/p/go/issues/detail?id=7468</a>)).</li>
+<li>MSpanSys/MCacheSys/BuckHashSys/GCSys/OtherSys - amount of memory allocated
+    by runtime for various auxiliary purposes; they are generally not
+    interesting, unless they are too high.</li>
+<li>PauseNs - durations of last garbage collections.</li>
+</ol>
+<h2 id="heap-dumper">Heap Dumper<a class="headerlink" href="#heap-dumper" title="Permanent link"></a></h2>
+<p>The last available tool is heap dumper, it can write state of the whole heap
+into a file for future exploration. It can be useful for identifying memory
+leaks and getting insights into program memory consumption.</p>
+<p>First, you need to write the dump using
+<a href="http://tip.golang.org/pkg/runtime/debug/#WriteHeapDump">runtime/debug.WriteHeapDump</a>
+function:</p>
+<div class="codehilite"><pre><span></span><code>    <span class="nv">f</span>, <span class="nv">err</span> :<span class="o">=</span> <span class="nv">os</span>.<span class="nv">Create</span><span class="ss">(</span><span class="s2">&quot;</span><span class="s">heapdump</span><span class="s2">&quot;</span><span class="ss">)</span>
+    <span class="k">if</span> <span class="nv">err</span> <span class="o">!=</span> <span class="nv">nil</span> { ... }
+    <span class="nv">debug</span>.<span class="nv">WriteHeapDump</span><span class="ss">(</span><span class="nv">f</span>.<span class="nv">Fd</span><span class="ss">())</span>
+</code></pre></div>
+
+<p>Then you can either render it to a dot file with graphical representation of the
+heap or convert it to hprof format. To render it to a dot file:</p>
+<div class="codehilite"><pre><span></span><code>$ go get github.com/randall77/hprof/dumptodot
+$ dumptodot heapdump mybinary &gt; heap.dot
+</code></pre></div>
+
+<p>and open <code>heap.dot</code> with Graphviz.</p>
+<p>To convert it to <code>hprof</code> format:</p>
+<div class="codehilite"><pre><span></span><code>$ go get github.com/randall77/hprof/dumptohprof
+$ dumptohprof heapdump heap.hprof
+$ jhat heap.hprof
+</code></pre></div>
+
+<p>and navigate your browser to <a href="http://myserver:7000">http://myserver:7000</a>.</p>
+<h2 id="concluding-remarks">Concluding Remarks<a class="headerlink" href="#concluding-remarks" title="Permanent link"></a></h2>
+<p>Optimization is an open problem, there are simple recipes that you can use to
+improve performance. Sometimes optimization requires complete re-architecture of
+the program. But we hope that the tools will be a valuable addition to your
+toolbox, that you can use to at least analyze and understand what happens.
+<a href="http://blog.golang.org/profiling-go-programs">Profiling Go Programs</a> is a good
+tutorial on usage of CPU and memory profilers to optimize a simple program.</p>
+                
+                  
+                    
+
+<hr>
+<div class="md-source-date">
+  <small>
+    
+      Last update: 2021-06-30
+    
+  </small>
+</div>
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../PerfDashboard/" class="md-footer__link md-footer__link--prev" aria-label="Previous: PerfDashboard" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              PerfDashboard
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../Plan9/" class="md-footer__link md-footer__link--next" aria-label="Next: Plan9" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Plan9
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.sections", "navigation.expand", "toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.477d984a.min.js", "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.82b56eb2.min.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
